@@ -2,6 +2,7 @@ name: CI
 on:
   push: { branches: ["**"] }
   pull_request: {}
+
 permissions:
   contents: read
   security-events: write
@@ -13,33 +14,70 @@ jobs:
   quality:
     name: Lint • Tests • SCA • SBOM
     runs-on: ubuntu-latest
+    env:
+      ALLOW_TEST_FAILURES: "true"   # cambiar a "false" para que pytest falle el CI
+      ALLOW_TYPE_ERRORS: "true"     # cambiar a "false" para que mypy falle el CI
+      FAIL_ON_SECURITY: "false"     # cambiar a "true" para que tools fallen en vulnerabilidades
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Python
         uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
+        with:
+          python-version: "3.11"
 
-      - name: Install uv (pip replacement)
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install uv (pip replacement) and expose path
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
       - name: Show uv version
-        run: ~/.cargo/bin/uv --version
+        run: |
+          uv --version || ~/.local/bin/uv --version || true
 
       - name: Lint/Format/Types
         run: |
-          ~/.cargo/bin/uvx black --check .
-          ~/.cargo/bin/uvx isort --check-only .
-          ~/.cargo/bin/uvx flake8 .
-          ~/.cargo/bin/uvx mypy --pretty || true
+          # formato y linters: considerarlos "must pass" en el futuro
+          uvx black --check .
+          uvx isort --check-only .
+          uvx flake8 .
+          if [ "${ALLOW_TYPE_ERRORS}" = "true" ]; then
+            echo "ALLOW_TYPE_ERRORS=true -> running mypy but not failing pipeline on errors"
+            uvx mypy --pretty || true
+          else
+            echo "ALLOW_TYPE_ERRORS=false -> failing job on mypy errors"
+            uvx mypy --pretty
+          fi
 
       - name: Unit tests + Coverage (if any)
         run: |
-          ~/.cargo/bin/uvx pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml || true
+          if [ "${ALLOW_TEST_FAILURES}" = "true" ]; then
+            echo "ALLOW_TEST_FAILURES=true -> running tests but not failing the job on failures"
+            uvx pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml || true
+          else
+            echo "ALLOW_TEST_FAILURES=false -> failing job on test failures"
+            uvx pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml
+          fi
 
       - name: Bandit (SAST)
-        run: ~/.cargo/bin/uvx bandit -q -r . || true
+        run: |
+          # Save bandit output and don't fail the job by default.
+          uvx bandit -q -r . -f json -o bandit.json || true
+          # If FAIL_ON_SECURITY=true we fail when any issue is reported
+          if [ "${FAIL_ON_SECURITY}" = "true" ]; then
+            python - <<'PY'
+import json, sys
+d=json.load(open('bandit.json'))
+if d.get('results'):
+    print('Bandit found issues; failing because FAIL_ON_SECURITY=true')
+    sys.exit(1)
+else:
+    print('Bandit found no issues')
+PY
+          fi
 
-      - name: Semgrep (OWASP + Python)
+      - name: Semgrep (OWASP + Python) (SARIF)
         uses: returntocorp/semgrep-action@v1
         with:
           config: >-
@@ -50,13 +88,36 @@ jobs:
           auditOn: push
 
       - name: pip-audit
-        run: ~/.cargo/bin/uvx pip-audit -f json -o pip_audit.json || true
+        run: |
+          uvx pip-audit -f json -o pip_audit.json || true
+          if [ "${FAIL_ON_SECURITY}" = "true" ]; then
+            python - <<'PY'
+import json,sys
+d=json.load(open('pip_audit.json'))
+if d:
+    print('pip-audit found issues; failing because FAIL_ON_SECURITY=true')
+    sys.exit(1)
+print('pip-audit no findings (or not JSON)')
+PY
+          fi
 
       - name: Safety
-        run: ~/.cargo/bin/uvx safety check -o safety.json --json || true
+        run: |
+          uvx safety check -o safety.json --json || true
+          if [ "${FAIL_ON_SECURITY}" = "true" ]; then
+            python - <<'PY'
+import json,sys
+d=json.load(open('safety.json'))
+if d.get('vulnerabilities'):
+    print('Safety found issues; failing because FAIL_ON_SECURITY=true')
+    sys.exit(1)
+print('Safety no findings (or empty)')
+PY
+          fi
 
       - name: SBOM (CycloneDX)
-        run: ~/.cargo/bin/uvx cyclonedx-bom -o sbom.json || true
+        run: |
+          uvx cyclonedx-bom -o sbom.json || true
 
       - name: Upload QA artifacts
         uses: actions/upload-artifact@v4
@@ -68,6 +129,7 @@ jobs:
             pip_audit.json
             safety.json
             semgrep.sarif
+            bandit.json
 
   codeql:
     name: CodeQL (Python)
@@ -79,6 +141,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v3
-        with: { languages: python }
+        with:
+          languages: python
       - uses: github/codeql-action/autobuild@v3
       - uses: github/codeql-action/analyze@v3
