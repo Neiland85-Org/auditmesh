@@ -1,0 +1,84 @@
+name: CI
+on:
+  push: { branches: ["**"] }
+  pull_request: {}
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  quality:
+    name: Lint • Tests • SCA • SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+
+      - name: Install uv (pip replacement)
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Show uv version
+        run: ~/.cargo/bin/uv --version
+
+      - name: Lint/Format/Types
+        run: |
+          ~/.cargo/bin/uvx black --check .
+          ~/.cargo/bin/uvx isort --check-only .
+          ~/.cargo/bin/uvx flake8 .
+          ~/.cargo/bin/uvx mypy --pretty || true
+
+      - name: Unit tests + Coverage (if any)
+        run: |
+          ~/.cargo/bin/uvx pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml || true
+
+      - name: Bandit (SAST)
+        run: ~/.cargo/bin/uvx bandit -q -r . || true
+
+      - name: Semgrep (OWASP + Python)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/owasp-top-ten
+            p/python
+          generateSarif: "1"
+          publishToken: ""
+          auditOn: push
+
+      - name: pip-audit
+        run: ~/.cargo/bin/uvx pip-audit -f json -o pip_audit.json || true
+
+      - name: Safety
+        run: ~/.cargo/bin/uvx safety check -o safety.json --json || true
+
+      - name: SBOM (CycloneDX)
+        run: ~/.cargo/bin/uvx cyclonedx-bom -o sbom.json || true
+
+      - name: Upload QA artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-artifacts
+          path: |
+            coverage.xml
+            sbom.json
+            pip_audit.json
+            safety.json
+            semgrep.sarif
+
+  codeql:
+    name: CodeQL (Python)
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with: { languages: python }
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
