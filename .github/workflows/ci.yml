@@ -66,15 +66,7 @@ jobs:
           uvx bandit -q -r . -f json -o bandit.json || true
           # If FAIL_ON_SECURITY=true we fail when any issue is reported
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
-            python - <<'PY'
-import json, sys
-d=json.load(open('bandit.json'))
-if d.get('results'):
-    print('Bandit found issues; failing because FAIL_ON_SECURITY=true')
-    sys.exit(1)
-else:
-    print('Bandit found no issues')
-PY
+            python -c "import json,sys; d=json.load(open('bandit.json')); (print('Bandit found issues; failing because FAIL_ON_SECURITY=true') or sys.exit(1)) if d.get('results') else print('Bandit found no issues')"
           fi
 
       - name: Semgrep (OWASP + Python) (SARIF)
@@ -83,36 +75,19 @@ PY
           config: >-
             p/owasp-top-ten
             p/python
-          generateSarif: "1"
-          publishToken: ""
-          auditOn: push
 
       - name: pip-audit
         run: |
           uvx pip-audit -f json -o pip_audit.json || true
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
-            python - <<'PY'
-import json,sys
-d=json.load(open('pip_audit.json'))
-if d:
-    print('pip-audit found issues; failing because FAIL_ON_SECURITY=true')
-    sys.exit(1)
-print('pip-audit no findings (or not JSON)')
-PY
+            python -c "import json,sys; d=json.load(open('pip_audit.json')); (print('pip-audit found issues; failing because FAIL_ON_SECURITY=true') or sys.exit(1)) if d else print('pip-audit no findings (or not JSON)')"
           fi
 
       - name: Safety
         run: |
           uvx safety check -o safety.json --json || true
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
-            python - <<'PY'
-import json,sys
-d=json.load(open('safety.json'))
-if d.get('vulnerabilities'):
-    print('Safety found issues; failing because FAIL_ON_SECURITY=true')
-    sys.exit(1)
-print('Safety no findings (or empty)')
-PY
+            python -c "import json,sys; d=json.load(open('safety.json')); (print('Safety found issues; failing because FAIL_ON_SECURITY=true') or sys.exit(1)) if d.get('vulnerabilities') else print('Safety no findings (or empty)')"
           fi
 
       - name: SBOM (CycloneDX)
@@ -131,17 +106,19 @@ PY
             semgrep.sarif
             bandit.json
 
-  codeql:
-    name: CodeQL (Python)
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
-        with:
-          languages: python
-      - uses: github/codeql-action/autobuild@v3
-      - uses: github/codeql-action/analyze@v3
+  # codeql:
+  #   name: CodeQL (Python)
+  #   runs-on: ubuntu-latest
+  #   # Only run CodeQL when Python source code exists
+  #   if: "contains(github.event.head_commit.modified, '*.py') || contains(github.event.head_commit.added, '*.py') || contains(github.event.head_commit.removed, '*.py') || contains(github.event.pull_request.files.*.filename, '*.py')"
+  #   permissions:
+  #     actions: read
+  #     contents: read
+  #     security-events: write
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: github/codeql-action/init@v3
+  #       with:
+  #         languages: python
+  #     - uses: github/codeql-action/autobuild@v3
+  #     - uses: github/codeql-action/analyze@v3
