@@ -65,7 +65,7 @@ main() {
     
     # Login to GitHub Container Registry
     echo "🔐 Logging into GitHub Container Registry..."
-    echo "${GITHUB_TOKEN}" | docker login "${DOCKER_REGISTRY}" -u "${DOCKER_USERNAME}" --password-stdin
+    docker login "${DOCKER_REGISTRY}" -u "${DOCKER_USERNAME}" --password-stdin <<< "${GITHUB_TOKEN}"
     
     if [ $? -ne 0 ]; then
         echo "❌ Failed to login to GitHub Container Registry"
