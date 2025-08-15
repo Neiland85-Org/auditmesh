@@ -66,7 +66,7 @@ jobs:
           uvx bandit -q -r . -f json -o bandit.json || true
           # If FAIL_ON_SECURITY=true we fail when any issue is reported
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
-            python -c "import json,sys; d=json.load(open('bandit.json')); (print('Bandit encontró problemas; fallando porque FAIL_ON_SECURITY=true') or sys.exit(1)) if d.get('results') else print('Bandit no encontró problemas')"
+            python -c "import json,sys; d=json.load(open('bandit.json')); (print('Bandit found issues; failing because FAIL_ON_SECURITY=true') or sys.exit(1)) if d.get('results') else print('Bandit found no issues')"
           fi
 
       - name: Semgrep (OWASP + Python) (SARIF)
