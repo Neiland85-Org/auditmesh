@@ -29,7 +29,12 @@ export NODE_ENV="development"
 export PYTHON_VERSION="3.11"
 
 # Git Information
-export GIT_SHA="$(git rev-parse --short HEAD)"
+GIT_SHA_RAW="$(git rev-parse --short HEAD 2>/dev/null)"
+if [[ "$GIT_SHA_RAW" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+  export GIT_SHA="$GIT_SHA_RAW"
+else
+  export GIT_SHA="unknown"
+fi
 export GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # Container Registry URLs
