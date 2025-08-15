@@ -109,8 +109,6 @@ jobs:
   # codeql:
   #   name: CodeQL (Python)
   #   runs-on: ubuntu-latest
-  #   # Only run CodeQL when Python source code exists
-  #   if: "contains(github.event.head_commit.modified, '*.py') || contains(github.event.head_commit.added, '*.py') || contains(github.event.head_commit.removed, '*.py') || contains(github.event.pull_request.files.*.filename, '*.py')"
   #   permissions:
   #     actions: read
   #     contents: read
