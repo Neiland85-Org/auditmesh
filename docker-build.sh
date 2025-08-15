@@ -15,7 +15,10 @@ build_and_push() {
         -t "${REGISTRY}/${service}:sha-${GIT_SHA}" \
         "./services/${service}"
     
-    if [ $? -ne 0 ]; then
+    if ! docker build \
+        --platform "${DOCKER_PLATFORM}" \
+        -t "${REGISTRY}/${service}:sha-${GIT_SHA}" \
+        "./services/${service}"; then
         echo "❌ Failed to build ${service}"
         return 1
     fi
