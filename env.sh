@@ -4,7 +4,6 @@
 export GITHUB_ORG="Neiland85-Org"
 export GITHUB_REPO="auditmesh"
 export GITHUB_TOKEN="$(gh auth token)"
-export GITHUB_TOKEN="${GITHUB_TOKEN}"
 if [ -z "${GITHUB_TOKEN}" ]; then
   echo "⚠️  Warning: GITHUB_TOKEN is not set. Please export your GitHub token before sourcing this script."
 fi
