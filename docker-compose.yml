@@ -1,0 +1,53 @@
+services:
+  ms-gateway:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    build:
+      context: ./services/ms-gateway
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-ghcr.io/neiland85-org}/ms-gateway:${GIT_SHA:-dev}
+    container_name: ms-gateway
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${GATEWAY_PORT:-3000}
+    ports:
+      - "${GATEWAY_PORT:-3000}:3000"
+    depends_on:
+      - ms-lie-detector
+      - ms-auditor
+    networks:
+      - auditmesh-network
+
+  ms-lie-detector:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    build:
+      context: ./services/ms-lie-detector
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-ghcr.io/neiland85-org}/ms-lie-detector:${GIT_SHA:-dev}
+    container_name: ms-lie-detector
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${LIE_DETECTOR_PORT:-3001}
+    ports:
+      - "${LIE_DETECTOR_PORT:-3001}:3001"
+    networks:
+      - auditmesh-network
+
+  ms-auditor:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    build:
+      context: ./services/ms-auditor
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-ghcr.io/neiland85-org}/ms-auditor:${GIT_SHA:-dev}
+    container_name: ms-auditor
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${AUDITOR_PORT:-3002}
+    ports:
+      - "${AUDITOR_PORT:-3002}:3002"
+    networks:
+      - auditmesh-network
+
+networks:
+  auditmesh-network:
+    driver: bridge
+    name: auditmesh-network
