@@ -38,7 +38,6 @@ build_and_push() {
         echo "✅ Successfully built and pushed ${service}"
     else
         echo "❌ Failed to push ${service}"
-        return 1
     if [ $? -ne 0 ]; then
         echo "❌ Failed to push ${service}:sha-${GIT_SHA}"
         return 1
