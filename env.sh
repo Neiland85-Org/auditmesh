@@ -11,7 +11,12 @@ fi
 # Docker Registry Configuration
 export DOCKER_REGISTRY="ghcr.io"
 export DOCKER_NAMESPACE="${GITHUB_ORG}"
-export DOCKER_USERNAME="$(gh api user --jq .login)"
+# Set DOCKER_USERNAME from environment, or fail if not set
+if [ -z "${DOCKER_USERNAME}" ]; then
+  echo "❌ DOCKER_USERNAME is not set. Please set it before sourcing this script."
+  return 1 2>/dev/null || exit 1
+fi
+export DOCKER_USERNAME
 
 # Container Platform
 export DOCKER_PLATFORM="linux/amd64"
