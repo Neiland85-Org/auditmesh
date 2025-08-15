@@ -14,7 +14,6 @@ build_and_push() {
         --platform "${DOCKER_PLATFORM}" \
         -t "${REGISTRY}/${service}:sha-${GIT_SHA}" \
         "./services/${service}"
-    
     if ! docker build \
         --platform "${DOCKER_PLATFORM}" \
         -t "${REGISTRY}/${service}:sha-${GIT_SHA}" \
