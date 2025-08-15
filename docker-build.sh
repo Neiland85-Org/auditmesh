@@ -40,7 +40,22 @@ build_and_push() {
     else
         echo "❌ Failed to push ${service}"
         return 1
+    if [ $? -ne 0 ]; then
+        echo "❌ Failed to push ${service}:sha-${GIT_SHA}"
+        return 1
     fi
+    docker push "${REGISTRY}/${service}:branch-${GIT_BRANCH}"
+    if [ $? -ne 0 ]; then
+        echo "❌ Failed to push ${service}:branch-${GIT_BRANCH}"
+        return 1
+    fi
+    docker push "${REGISTRY}/${service}:dev"
+    if [ $? -ne 0 ]; then
+        echo "❌ Failed to push ${service}:dev"
+        return 1
+    fi
+    
+    echo "✅ Successfully built and pushed ${service}"
 }
 
 # Main execution
