@@ -71,6 +71,7 @@ terminar el contrato de servicio principal.
 - **Performance Monitoring:** Optimize service delivery and reliability
 
 ## 🔐 **4. Types of Personal Data and Categories of Data Subjects / Tipos de Datos Personales y Categorías de Interesados**
+
 ### 4.1 **Types of Personal Data / Tipos de Datos Personales**
 
 - **Identity Data:** Names, email addresses, user IDs
