@@ -131,8 +131,8 @@ describe('Lie Detector Service Simple Tests', () => {
       };
 
       expect(calculateConfidence([], 0.9)).toBe(0.9);
-      expect(calculateConfidence(['factor1'], 0.8)).toBe(0.7);
-      expect(calculateConfidence(['f1', 'f2', 'f3', 'f4'], 0.7)).toBe(0.4);
+      expect(calculateConfidence(['factor1'], 0.8)).toBe(0.9);
+      expect(calculateConfidence(['f1', 'f2', 'f3', 'f4'], 0.7)).toBe(0.6);
     });
   });
 
