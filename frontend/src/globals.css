@@ -105,4 +105,19 @@
       linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   }
+
+  /* Focus ring for accessibility */
+  .focus-ring:focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-neutral-950;
+  }
+
+  /* Card hover tilt effect */
+  .tilt {
+    transform-style: preserve-3d;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .tilt:hover {
+    box-shadow: 0 10px 40px rgba(45, 143, 255, 0.25);
+  }
 }

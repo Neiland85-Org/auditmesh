@@ -22,6 +22,19 @@ export default {
           900: 'hsl(var(--primary-900))',
           950: 'hsl(var(--primary-950))',
         },
+        // Brand colors for the new design
+        brand: {
+          50: '#eef7ff',
+          100: '#d9ecff',
+          200: '#b7ddff',
+          300: '#88c8ff',
+          400: '#57adff',
+          500: '#2d8fff',
+          600: '#1e72f0',
+          700: '#195bd1',
+          800: '#184ba8',
+          900: '#173f86',
+        },
         // Service-specific colors
         gateway: {
           500: 'hsl(var(--gateway-500))',
@@ -72,6 +85,14 @@ export default {
       },
       backdropBlur: {
         xs: '2px',
+      },
+      backgroundImage: {
+        'grid': 'linear-gradient(#1f2937 1px, transparent 1px), linear-gradient(90deg, #1f2937 1px, transparent 1px)',
+      },
+      boxShadow: {
+        'glow': '0 0 40px 8px rgba(45,143,255,0.25)',
+        'glow-sm': '0 0 20px 4px rgba(45,143,255,0.15)',
+        'glow-lg': '0 0 60px 12px rgba(45,143,255,0.35)',
       },
     },
   },
