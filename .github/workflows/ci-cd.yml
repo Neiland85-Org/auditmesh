@@ -57,6 +57,15 @@ jobs:
             security-report.json
             safety-report.json
 
+      - name: 🔍 Run CodeQL Analysis
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-and-quality
+
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
   test:
     name: 🧪 Testing Suite
     runs-on: ubuntu-latest
