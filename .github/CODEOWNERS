@@ -1,1 +1,23 @@
+# Code Owners for AuditMesh
+# Propietarios del código para AuditMesh
+
+# Global owners
 * @Neiland85
+
+# Microservices
+/services/ms-gateway/ @Neiland85
+/services/ms-lie-detector/ @Neiland85
+/services/ms-auditor/ @Neiland85
+
+# Documentation
+/docs/ @Neiland85
+
+# CI/CD Configuration
+/.github/ @Neiland85
+
+# Docker and Infrastructure
+/docker-compose.yml @Neiland85
+/Dockerfile* @Neiland85
+
+# Scripts
+/scripts/ @Neiland85
