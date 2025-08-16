@@ -92,7 +92,7 @@ describe('Advanced E2E Integration Tests', () => {
         if (event.data?.userAgent?.includes('bot')) {
           riskFactors.push('Bot-like user agent');
           riskScore += 30;
-          }
+        }
 
         const riskLevel = riskScore >= 50 ? 'HIGH' : riskScore >= 25 ? 'MEDIUM' : 'LOW';
         

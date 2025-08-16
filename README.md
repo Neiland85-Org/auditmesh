@@ -83,6 +83,32 @@ auditmesh/
 └── README.md             # Este archivo
 ```
 
+## 🚀 Configuración
+
+### Variables de Entorno
+
+El sistema utiliza variables de entorno para configurar la conectividad entre servicios:
+
+```bash
+# Gateway Service
+PORT=3000
+LIE_DETECTOR_HOST=ms-lie-detector
+LIE_DETECTOR_PORT=3001
+AUDITOR_HOST=ms-auditor
+AUDITOR_PORT=3002
+
+# Lie Detector Service
+PORT=3001
+
+# Auditor Service
+PORT=3002
+```
+
+### Archivos de Configuración
+
+- `.env.example`: Configuración local de desarrollo
+- `docker.env.example`: Configuración para entornos Docker
+
 ## 🧪 Testing
 
 ### APIs Disponibles

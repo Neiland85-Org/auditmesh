@@ -27,85 +27,78 @@ app.post('/analyze', (req, res) => {
   try {
     const event = req.body;
     
-    // Validate event
-    if (!event.eventId || !event.type) {
+    if (!event.eventId) {
       return res.status(400).json({
-        error: 'Invalid event data',
-        required: ['eventId', 'type']
+        error: 'Missing eventId'
       });
     }
 
-    // Simulate AI-powered lie detection analysis
-    const riskFactors = [];
     let riskScore = 0;
-    let confidence = 0.85;
+    const riskFactors = [];
 
     // Analyze IP address
-    if (event.data?.ipAddress) {
+    if (event.data && event.data.ipAddress) {
       if (event.data.ipAddress.startsWith('192.168.')) {
         riskFactors.push('Internal network IP');
         riskScore += 10;
-      } else if (event.data.ipAddress.includes('0.0.0.0')) {
+      } else if (event.data.ipAddress === '0.0.0.0') {
         riskFactors.push('Invalid IP address');
         riskScore += 50;
+      } else if (event.data.ipAddress === '127.0.0.1') {
+        riskFactors.push('Localhost access');
+        riskScore += 20;
       }
     }
 
     // Analyze user agent
-    if (event.data?.userAgent) {
-      if (event.data.userAgent.includes('bot') || event.data.userAgent.includes('crawler')) {
+    if (event.data && event.data.userAgent) {
+      if (event.data.userAgent.includes('bot')) {
         riskFactors.push('Bot-like user agent');
         riskScore += 30;
       }
     }
 
-    // Analyze location vs IP
-    if (event.data?.location && event.data?.ipAddress) {
-      if (event.data.location.includes('ES') && event.data.ipAddress.startsWith('192.168.')) {
-        riskFactors.push('Location mismatch with internal IP');
-        riskScore += 20;
-      }
-    }
-
-    // Analyze timestamp patterns
+    // Analyze timestamp for unusual patterns
     if (event.timestamp) {
       const eventTime = new Date(event.timestamp);
-      const now = new Date();
-      const timeDiff = Math.abs(now - eventTime);
-      
-      if (timeDiff > 24 * 60 * 60 * 1000) { // More than 24 hours
-        riskFactors.push('Event timestamp too old');
-        riskScore += 20;
+      const hour = eventTime.getHours();
+      if (hour < 6 || hour > 22) {
+        riskFactors.push('Unusual access time');
+        riskScore += 15;
       }
     }
 
     // Determine risk level
     let riskLevel = 'LOW';
-    if (riskScore >= 50) riskLevel = 'HIGH';
-    else if (riskScore >= 25) riskLevel = 'MEDIUM';
+    if (riskScore >= 50) {
+      riskLevel = 'HIGH';
+    } else if (riskScore >= 25) {
+      riskLevel = 'MEDIUM';
+    }
+
+    // Generate recommendations
+    const recommendations = [];
+    if (riskLevel === 'HIGH') {
+      recommendations.push('Immediate investigation required');
+      recommendations.push('Block access temporarily');
+    } else if (riskLevel === 'MEDIUM') {
+      recommendations.push('Monitor closely');
+      recommendations.push('Review access patterns');
+    } else {
+      recommendations.push('Continue monitoring');
+    }
 
     const analysis = {
       eventId: event.eventId,
       riskScore: riskScore,
       riskLevel: riskLevel,
-      confidence: confidence,
       riskFactors: riskFactors,
-      analysis: {
-        timestamp: new Date().toISOString(),
-        algorithm: 'AuditMesh AI v1.0',
-        version: '1.0.0'
-      },
-      recommendations: riskScore > 25 ? [
-        'Review event details',
-        'Verify user identity',
-        'Check for suspicious patterns'
-      ] : [
-        'Event appears normal',
-        'Continue monitoring'
-      ]
+      recommendations: recommendations,
+      confidence: 0.85,
+      timestamp: new Date().toISOString()
     };
 
-    res.status(200).json(analysis);
+    res.json(analysis);
 
   } catch (error) {
     console.error('Error analyzing event:', error);
