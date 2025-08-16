@@ -94,14 +94,8 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔍 Run CodeQL Analysis
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          queries: security-and-quality
-
-      - name: 🔍 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      # CodeQL analysis is handled by GitHub's default setup
+      # Análisis de CodeQL manejado por configuración por defecto de GitHub
 
       - name: 📊 Generate PR Summary
         run: |
@@ -111,6 +105,6 @@ jobs:
           echo "- Markdown linting" >> $GITHUB_STEP_SUMMARY
           echo "- Security scanning" >> $GITHUB_STEP_SUMMARY
           echo "- Unit testing" >> $GITHUB_STEP_SUMMARY
-          echo "- CodeQL analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- CodeQL analysis (GitHub default)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🚀 Ready for Review!" >> $GITHUB_STEP_SUMMARY
