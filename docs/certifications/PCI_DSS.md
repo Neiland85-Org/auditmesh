@@ -35,15 +35,8 @@ ensuring secure handling of payment card data and maintaining the highest standa
 
 ## 🔒 **3. PCI DSS Requirements / Requisitos de PCI DSS**
 
-<<<<<<< Updated upstream
-### 3.1 **Requirement 1: Install and Maintain Network Security Controls / Instalar y Mantener Controles de Seguridad de
-
-Red**
-### 3.1 **Requirement 1: Install and Maintain Network Security Controls / Instalar y Mantener Controles de Seguridad de Red**
-=======
 ### 3.1 **Requirement 1: Install and Maintain Network Security Controls / Instalar y Mantener Controles de Seguridad de Red**
 
->>>>>>> Stashed changes
 - **Firewall Configuration:** Proper firewall configuration and management
 
 - **Network Segmentation:** Network segmentation and isolation
