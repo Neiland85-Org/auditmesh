@@ -1,0 +1,74 @@
+name: 🏷️ Release Management
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    name: 🏷️ Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏷️ Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name || github.event.inputs.version }}
+          release_name: Release ${{ github.ref_name || github.event.inputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: 📊 Generate Release Notes
+        run: |
+          echo "## 🚀 What's New in ${{ github.ref_name || github.event.inputs.version }}" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### ✨ New Features" >> RELEASE_NOTES.md
+          echo "- Comprehensive unit testing suite" >> RELEASE_NOTES.md
+          echo "- CI/CD pipeline automation" >> RELEASE_NOTES.md
+          echo "- Security scanning integration" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### 🔧 Improvements" >> RELEASE_NOTES.md
+          echo "- Code quality enhancements" >> RELEASE_NOTES.md
+          echo "- Docker image optimization" >> RELEASE_NOTES.md
+          echo "- Environment configuration" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### 🐛 Bug Fixes" >> RELEASE_NOTES.md
+          echo "- IP validation fixes" >> RELEASE_NOTES.md
+          echo "- Syntax error corrections" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### 📚 Documentation" >> RELEASE_NOTES.md
+          echo "- Testing strategy documentation" >> RELEASE_NOTES.md
+          echo "- CI/CD pipeline documentation" >> RELEASE_NOTES.md
+
+      - name: 📤 Upload Release Notes
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./RELEASE_NOTES.md
+          asset_name: RELEASE_NOTES.md
+          asset_content_type: text/markdown
+
+  notify-release:
+    name: 📢 Notify Release
+    runs-on: ubuntu-latest
+    needs: create-release
+    steps:
+      - name: 📧 Send Release Notification
+        run: |
+          echo "🎉 Release ${{ github.ref_name || github.event.inputs.version }} created successfully!"
+          echo "📋 Release URL: ${{ needs.create_release.outputs.upload_url }}"
+          echo "📊 Assets uploaded: RELEASE_NOTES.md"

@@ -6,7 +6,7 @@ AuditMesh implementa un sistema de testing completo y robusto que cubre todos lo
 
 ## 🏗️ **Arquitectura de Testing**
 
-```
+```bash
 auditmesh/
 ├── services/
 │   ├── ms-gateway/
@@ -86,7 +86,7 @@ Cada servicio incluye las siguientes dependencias de testing:
   - Manejo de errores (500)
 - **Integration:** Comunicación con Lie Detector y Auditor
 
-#### **Tests Implementados:**
+#### **Tests Implementados - Gateway:**
 
 ```bash
 # Tests de integración (contra servicio real)
@@ -104,7 +104,7 @@ npm test -- __tests__/gateway.test.js
 - ✅ `GET /` - Información del servicio
 - ✅ `POST /analyze` - Análisis de eventos
 
-#### **Casos de Test:**
+#### **Casos de Test - Lie Detector:**
 
 - **Health Check:** Verificación de estado saludable
 - **Service Info:** Información del servicio y versión
@@ -120,7 +120,7 @@ npm test -- __tests__/gateway.test.js
   - HIGH (50+ puntos)
 - **Validation:** Campos requeridos (eventId, type)
 
-#### **Tests Implementados:**
+#### **Tests Implementados - Lie Detector:**
 
 ```bash
 # Tests de integración (contra servicio real)
@@ -138,7 +138,7 @@ npm test -- __tests__/lie-detector.test.js
 - ✅ `GET /` - Información del servicio
 - ✅ `POST /audit` - Creación de registros de auditoría
 
-#### **Casos de Test:**
+#### **Casos de Test - Auditor:**
 
 - **Health Check:** Verificación de estado saludable
 - **Service Info:** Información del servicio y versión
@@ -153,7 +153,7 @@ npm test -- __tests__/lie-detector.test.js
 - **Error Handling:** Manejo de datos inválidos
 - **Performance:** Tests de concurrencia
 
-#### **Tests Implementados:**
+#### **Tests Implementados - Auditor:**
 
 ```bash
 # Tests completos (mocked)

@@ -1,0 +1,32 @@
+name: "CodeQL Config"
+
+paths:
+  - "services/**"
+  - "scripts/**"
+  - "docs/**"
+
+paths-ignore:
+  - "**/node_modules/**"
+  - "**/coverage/**"
+  - "**/*.test.js"
+  - "**/*.spec.js"
+  - "**/__tests__/**"
+
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+  - uses: security-experimental
+
+query-filters:
+  - include:
+      tags contain: security
+  - include:
+      tags contain: security-external
+  - include:
+      tags contain: security-extended
+  - include:
+      tags contain: security-experimental
+  - exclude:
+      tags contain: false-positive
+  - exclude:
+      tags contain: experimental

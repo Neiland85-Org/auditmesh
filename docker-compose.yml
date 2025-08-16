@@ -1,4 +1,18 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=auditmesh
+      - POSTGRES_USER=auditmesh
+      - POSTGRES_PASSWORD=auditmesh123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - auditmesh-network
+
   ms-gateway:
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     build:
@@ -12,6 +26,7 @@ services:
     ports:
       - "${GATEWAY_PORT:-3000}:3000"
     depends_on:
+      - postgres
       - ms-lie-detector
       - ms-auditor
     networks:
@@ -29,6 +44,8 @@ services:
       - PORT=${LIE_DETECTOR_PORT:-3001}
     ports:
       - "${LIE_DETECTOR_PORT:-3001}:3001"
+    depends_on:
+      - postgres
     networks:
       - auditmesh-network
 
@@ -42,8 +59,11 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - PORT=${AUDITOR_PORT:-3002}
+      - DATABASE_URL=postgresql://auditmesh:auditmesh123@postgres:5432/auditmesh
     ports:
       - "${AUDITOR_PORT:-3002}:3002"
+    depends_on:
+      - postgres
     networks:
       - auditmesh-network
 
@@ -51,3 +71,6 @@ networks:
   auditmesh-network:
     driver: bridge
     name: auditmesh-network
+
+volumes:
+  postgres_data:
