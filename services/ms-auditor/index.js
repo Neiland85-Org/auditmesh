@@ -1,10 +1,38 @@
 const express = require('express');
 const { Pool } = require('pg');
 const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 const app = express();
 const port = process.env.PORT || 3002;
 
 app.use(express.json());
+
+// Rate limiting configuration
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting to all routes
+app.use(limiter);
+
+// Stricter rate limiting for database-intensive operations
+const dbLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // limit each IP to 30 requests per windowMs for DB operations
+  message: {
+    error: 'Too many database requests from this IP, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Database connection
 const pool = new Pool({
@@ -108,7 +136,7 @@ app.get('/', (req, res) => {
 });
 
 // Get Merkle root endpoint
-app.get('/merkle/root', async (req, res) => {
+app.get('/merkle/root', dbLimiter, async (req, res) => {
   try {
     const lastHash = await getLastHash();
     res.status(200).json({
@@ -125,7 +153,7 @@ app.get('/merkle/root', async (req, res) => {
 });
 
 // Get audit log endpoint
-app.get('/audit/log', async (req, res) => {
+app.get('/audit/log', dbLimiter, async (req, res) => {
   try {
     const client = await pool.connect();
     const result = await client.query(
@@ -148,7 +176,7 @@ app.get('/audit/log', async (req, res) => {
 });
 
 // Audit endpoint
-app.post('/audit', async (req, res) => {
+app.post('/audit', dbLimiter, async (req, res) => {
   try {
     const { eventId, analysis, originalEvent } = req.body;
     
