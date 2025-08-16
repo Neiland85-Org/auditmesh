@@ -16,6 +16,12 @@ on:
         - staging
         - production
 
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+  actions: read
+
 env:
   NODE_VERSION: '18'
   DOCKER_REGISTRY: ghcr.io
@@ -110,13 +116,13 @@ jobs:
           docker build -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-lie-detector:${{ github.sha }} services/ms-lie-detector/
           docker build -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-auditor:${{ github.sha }} services/ms-auditor/
 
-      - name: �� Push Docker images
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
-        run: |
-          echo "🚀 Pushing Docker images..."
-          # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-gateway:${{ github.sha }}
-          # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-lie-detector:${{ github.sha }}
-          # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-auditor:${{ github.sha }}
+      # - name: 🚀 Push Docker images
+      #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+      #   run: |
+      #     echo "🚀 Pushing Docker images..."
+      #     # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-gateway:${{ github.sha }}
+      #     # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-lie-detector:${{ github.sha }}
+      #     # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-auditor:${{ github.sha }}
 
   deploy:
     name: 🚀 Deploy to Environment

@@ -11,6 +11,11 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+  security-events: write
+  actions: read
+
 jobs:
   create-release:
     name: 🏷️ Create Release
