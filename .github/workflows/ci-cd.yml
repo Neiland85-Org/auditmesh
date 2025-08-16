@@ -19,7 +19,7 @@ on:
 env:
   NODE_VERSION: '18'
   DOCKER_REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: neiland85-org/auditmesh
 
 jobs:
   code-quality:
