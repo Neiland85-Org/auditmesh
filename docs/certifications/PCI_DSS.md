@@ -35,10 +35,15 @@ ensuring secure handling of payment card data and maintaining the highest standa
 
 ## 🔒 **3. PCI DSS Requirements / Requisitos de PCI DSS**
 
+<<<<<<< Updated upstream
 ### 3.1 **Requirement 1: Install and Maintain Network Security Controls / Instalar y Mantener Controles de Seguridad de
 
 Red**
 ### 3.1 **Requirement 1: Install and Maintain Network Security Controls / Instalar y Mantener Controles de Seguridad de Red**
+=======
+### 3.1 **Requirement 1: Install and Maintain Network Security Controls / Instalar y Mantener Controles de Seguridad de Red**
+
+>>>>>>> Stashed changes
 - **Firewall Configuration:** Proper firewall configuration and management
 
 - **Network Segmentation:** Network segmentation and isolation
@@ -49,9 +54,7 @@ Red**
 
 - **Documentation:** Network security documentation and procedures
 
-### 3.2 **Requirement 2: Apply Secure Configurations to All System Components / Aplicar Configuraciones Seguras a Todos
-
-los Componentes del Sistema**
+### 3.2 **Requirement 2: Apply Secure Configurations to All System Components / Aplicar Configuraciones Seguras a Todos los Componentes del Sistema**
 
 - **System Hardening:** System security hardening procedures
 
@@ -75,9 +78,7 @@ los Componentes del Sistema**
 
 - **Documentation:** Data protection documentation
 
-### 3.4 **Requirement 4: Protect Cardholder Data During Transmission / Proteger los Datos del Titular de la Tarjeta
-
-Durante la Transmisión**
+### 3.4 **Requirement 4: Protect Cardholder Data During Transmission / Proteger los Datos del Titular de la Tarjeta Durante la Transmisión**
 
 - **Encryption in Transit:** Strong encryption for data transmission
 
@@ -89,9 +90,7 @@ Durante la Transmisión**
 
 - **Documentation:** Transmission security documentation
 
-### 3.5 **Requirement 5: Protect All Systems and Networks from Malicious Software / Proteger Todos los Sistemas y Redes
-
-del Software Malicioso**
+### 3.5 **Requirement 5: Protect All Systems and Networks from Malicious Software / Proteger Todos los Sistemas y Redes del Software Malicioso**
 
 - **Anti-Malware:** Anti-malware software implementation
 
@@ -103,9 +102,7 @@ del Software Malicioso**
 
 - **Documentation:** Malware protection documentation
 
-### 3.6 **Requirement 6: Develop and Maintain Secure Systems and Software / Desarrollar y Mantener Sistemas y Software
-
-Seguros**
+### 3.6 **Requirement 6: Develop and Maintain Secure Systems and Software / Desarrollar y Mantener Sistemas y Software Seguros**
 
 - **Secure Development:** Secure software development practices
 
@@ -117,9 +114,7 @@ Seguros**
 
 - **Documentation:** Development security documentation
 
-### 3.7 **Requirement 7: Restrict Access to System Components and Cardholder Data / Restringir el Acceso a los
-
-Componentes del Sistema y los Datos del Titular de la Tarjeta**
+### 3.7 **Requirement 7: Restrict Access to System Components and Cardholder Data / Restringir el Acceso a los Componentes del Sistema y los Datos del Titular de la Tarjeta**
 
 - **Access Control:** Role-based access control implementation
 
@@ -131,9 +126,7 @@ Componentes del Sistema y los Datos del Titular de la Tarjeta**
 
 - **Documentation:** Access control documentation
 
-### 3.8 **Requirement 8: Identify Users and Authenticate Access to System Components / Identificar Usuarios y
-
-Autenticar el Acceso a los Componentes del Sistema**
+### 3.8 **Requirement 8: Identify Users and Authenticate Access to System Components / Identificar Usuarios y Autenticar el Acceso a los Componentes del Sistema**
 
 - **User Identification:** Unique user identification system
 
@@ -145,9 +138,7 @@ Autenticar el Acceso a los Componentes del Sistema**
 
 - **Documentation:** Authentication documentation
 
-### 3.9 **Requirement 9: Restrict Physical Access to Cardholder Data / Restringir el Acceso Físico a los Datos del
-
-Titular de la Tarjeta**
+### 3.9 **Requirement 9: Restrict Physical Access to Cardholder Data / Restringir el Acceso Físico a los Datos del Titular de la Tarjeta**
 
 - **Physical Security:** Physical facility security measures
 
