@@ -114,9 +114,9 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
         run: |
           echo "🚀 Pushing Docker images..."
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-gateway:${{ github.sha }}
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-lie-detector:${{ github.sha }}
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-auditor:${{ github.sha }}
+          # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-gateway:${{ github.sha }}
+          # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-lie-detector:${{ github.sha }}
+          # docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/ms-auditor:${{ github.sha }}
 
   deploy:
     name: 🚀 Deploy to Environment
