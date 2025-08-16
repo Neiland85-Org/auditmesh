@@ -19,7 +19,7 @@ export default function DarkToggle() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => setDark(v => !v)}
-      className="focus-ring inline-flex items-center gap-2 rounded-xl border border-neutral-800 px-3 py-2 text-sm hover:bg-neutral-900 transition-colors"
+      className="focus-ring inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm hover:bg-white/5 transition-colors"
       aria-label="Toggle theme"
     >
       <motion.div
@@ -27,9 +27,9 @@ export default function DarkToggle() {
         animate={{ rotate: dark ? 0 : 180 }}
         transition={{ duration: 0.3 }}
       >
-        {dark ? <Sun size={16}/> : <Moon size={16}/>}
+        {dark ? <Sun size={16} className="text-slate-300"/> : <Moon size={16} className="text-slate-300"/>}
       </motion.div>
-      <span>{dark ? 'Light' : 'Dark'}</span>
+      <span className="text-slate-300">{dark ? 'Light' : 'Dark'}</span>
     </motion.button>
   )
 }
