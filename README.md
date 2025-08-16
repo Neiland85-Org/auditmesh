@@ -18,6 +18,7 @@ AuditMesh es una plataforma de microservicios diseñada para auditoría y detecc
 ## 🚀 Quickstart (Desarrollo Local)
 
 ### Prerrequisitos
+
 ```bash
 # macOS
 brew install git gh jq make docker
@@ -28,6 +29,7 @@ docker compose version
 ```
 
 ### Configuración del Repositorio
+
 ```bash
 # Clonar y configurar
 gh auth login
@@ -39,6 +41,7 @@ export PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH"
 ```
 
 ### Levantar Servicios
+
 ```bash
 # Construir y levantar todos los servicios
 docker compose up -d --build
@@ -51,9 +54,10 @@ docker compose logs -f
 ```
 
 ### Acceso a los Servicios
-- **Gateway**: http://localhost:3000
-- **Lie Detector**: http://localhost:3001
-- **Auditor**: http://localhost:3002
+
+- **Gateway**: <http://localhost:3000>
+- **Lie Detector**: <http://localhost:3001>
+- **Auditor**: <http://localhost:3002>
 
 ## 🔧 CI/CD Pipeline
 
@@ -67,7 +71,7 @@ El proyecto incluye un pipeline CI/CD completo en `.github/workflows/ci.yml`:
 
 ## 📁 Estructura del Proyecto
 
-```
+```bash
 auditmesh/
 ├── .github/workflows/     # Pipelines CI/CD
 ├── services/              # Microservicios
@@ -82,11 +86,13 @@ auditmesh/
 ## 🧪 Testing
 
 ### APIs Disponibles
+
 - **Puerto 3000**: Gateway API
 - **Puerto 3001**: Lie Detector API
 - **Puerto 3002**: Auditor API
 
 ### Verificar Funcionamiento
+
 ```bash
 # Health checks
 curl http://localhost:3000/health
@@ -97,16 +103,19 @@ curl http://localhost:3002/health
 ## 🚀 Próximos Pasos
 
 ### 1. Desarrollo Local
+
 - ✅ **Servicios funcionando** en puertos 3000, 3001, 3002
 - 🔄 **Desarrollo activo** de nuevas funcionalidades
 - 🧪 **Testing local** de APIs y endpoints
 
 ### 2. CI/CD Pipeline
+
 - ✅ **Workflow configurado** en `ci.yml`
 - 🚀 **Despliegue automático** en GHCR
 - 🔒 **Seguridad integrada** con SBOM y Provenance
 
 ### 3. Testing y Validación
+
 - 🧪 **APIs funcionales** listas para pruebas
 - 🔍 **Endpoints de health** verificados
 - 📊 **Monitoreo** de servicios en tiempo real
