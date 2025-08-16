@@ -22,18 +22,19 @@ export default {
           900: 'hsl(var(--primary-900))',
           950: 'hsl(var(--primary-950))',
         },
-        // Brand colors for the new design
+        // Brand colors for the new design - Forensic Blue Theme
         brand: {
-          50: '#eef7ff',
-          100: '#d9ecff',
-          200: '#b7ddff',
-          300: '#88c8ff',
-          400: '#57adff',
-          500: '#2d8fff',
-          600: '#1e72f0',
-          700: '#195bd1',
-          800: '#184ba8',
-          900: '#173f86',
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+          950: '#082f49',
         },
         // Service-specific colors
         gateway: {
@@ -93,6 +94,9 @@ export default {
         'glow': '0 0 40px 8px rgba(45,143,255,0.25)',
         'glow-sm': '0 0 20px 4px rgba(45,143,255,0.15)',
         'glow-lg': '0 0 60px 12px rgba(45,143,255,0.35)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
     },
   },

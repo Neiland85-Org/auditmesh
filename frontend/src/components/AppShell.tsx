@@ -7,19 +7,18 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background elements */}
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      {/* Subtle background elements - calm-tech approach */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Floating orbs */}
-        <div className="absolute top-20 left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-20 left-1/2 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
+        {/* Very subtle floating elements - reduced ornamentation */}
+        <div className="absolute top-32 left-32 w-64 h-64 bg-brand-500/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-48 right-32 w-80 h-80 bg-brand-400/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
         
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-10">
+        {/* Minimal grid pattern - forensic precision */}
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-            backgroundSize: '20px 20px'
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.1) 1px, transparent 0)`,
+            backgroundSize: '24px 24px'
           }}></div>
         </div>
       </div>
@@ -28,13 +27,13 @@ export default function AppShell({ children }: AppShellProps) {
       <div className="relative z-10">
         <Navbar />
         
-        <main className="relative mx-auto max-w-7xl px-4 py-8">
+        <main className="relative mx-auto max-w-7xl px-6 py-8">
           {children}
         </main>
       </div>
       
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
+      {/* Subtle bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-950 to-transparent"></div>
     </div>
   )
 }
