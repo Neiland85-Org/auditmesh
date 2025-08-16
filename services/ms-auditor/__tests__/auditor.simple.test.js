@@ -207,7 +207,10 @@ describe('Auditor Service Simple Tests', () => {
       const validRecord = {
         eventId: 'test_001',
         action: 'login',
-        checksum: 'dGVzdF8w',
+        checksum: Buffer.from(JSON.stringify({
+          eventId: 'test_001',
+          action: 'login'
+        })).toString('base64').substring(0, 8),
         createdAt: new Date().toISOString(),
         version: '1.0'
       };
