@@ -87,12 +87,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🔍 Run CodeQL Analysis
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: javascript, python
 
       - name: 🔍 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
       - name: 📊 Generate PR Summary
         run: |
