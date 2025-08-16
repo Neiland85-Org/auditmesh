@@ -21,7 +21,7 @@ jobs:
       ALLOW_TYPE_ERRORS: "true"
       FAIL_ON_SECURITY: "false"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Python
         uses: actions/setup-python@v5
@@ -105,7 +105,7 @@ jobs:
       matrix:
         service: [ ms-gateway, ms-lie-detector, ms-auditor ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Login to GHCR
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
