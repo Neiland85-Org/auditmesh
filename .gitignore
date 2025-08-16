@@ -10,8 +10,20 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
-# Node (por devcontainer futuro)
+
+# Node.js
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# Coverage reports
+coverage/
+**/coverage/
+**/lcov-report/
+**/clover.xml
+**/coverage-final.json
+**/lcov.info
+
 # Docker
 *.log
 dist/
