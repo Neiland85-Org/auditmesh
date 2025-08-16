@@ -1,6 +1,14 @@
 const express = require('express');
+const http = require('http');
+
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+
+// Environment variables for service hostnames
+const LIE_DETECTOR_HOST = process.env.LIE_DETECTOR_HOST || 'ms-lie-detector';
+const LIE_DETECTOR_PORT = process.env.LIE_DETECTOR_PORT || 3001;
+const AUDITOR_HOST = process.env.AUDITOR_HOST || 'ms-auditor';
+const AUDITOR_PORT = process.env.AUDITOR_PORT || 3002;
 
 app.use(express.json());
 
@@ -22,6 +30,116 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Gateway service running on port ${port}`);
+// Event publishing endpoint
+app.post('/events', async (req, res) => {
+  try {
+    const event = req.body;
+    
+    // Validate event
+    if (!event.eventId || !event.type) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['eventId', 'type']
+      });
+    }
+
+    // Forward to Lie Detector for analysis
+    const analysis = await new Promise((resolve, reject) => {
+      const postData = JSON.stringify(event);
+      const options = {
+        hostname: LIE_DETECTOR_HOST,
+        port: LIE_DETECTOR_PORT,
+        path: '/analyze',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      };
+
+      const req = http.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          try {
+            const result = JSON.parse(data);
+            resolve(result);
+          } catch (error) {
+            reject(new Error('Invalid JSON response from Lie Detector'));
+          }
+        });
+      });
+
+      req.on('error', (error) => {
+        reject(error);
+      });
+
+      req.write(postData);
+      req.end();
+    });
+
+    // Forward to Auditor for audit record
+    const auditRecord = await new Promise((resolve, reject) => {
+      const postData = JSON.stringify({
+        eventId: event.eventId,
+        analysis: analysis,
+        originalEvent: event
+      });
+      
+      const options = {
+        hostname: AUDITOR_HOST,
+        port: AUDITOR_PORT,
+        path: '/audit',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      };
+
+      const req = http.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          try {
+            const result = JSON.parse(data);
+            resolve(result);
+          } catch (error) {
+            reject(new Error('Invalid JSON response from Auditor'));
+          }
+        });
+      });
+
+      req.on('error', (error) => {
+        reject(error);
+      });
+
+      req.write(postData);
+      req.end();
+    });
+
+    // Return combined response
+    res.json({
+      success: true,
+      eventId: event.eventId,
+      analysis: analysis,
+      audit: auditRecord,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Error processing event:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: error.message
+    });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Gateway service running on port ${PORT}`);
 });
