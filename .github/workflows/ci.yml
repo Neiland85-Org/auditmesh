@@ -35,26 +35,29 @@ jobs:
 
       - name: Lint/Format/Types
         run: |
-          uvx black --check .
-          uvx isort --check-only .
-          uvx flake8 .
+          pip install black isort flake8 mypy
+          black --check .
+          isort --check-only .
+          flake8 .
           if [ "${ALLOW_TYPE_ERRORS}" = "true" ]; then
-            uvx mypy --pretty || true
+            mypy --pretty || true
           else
-            uvx mypy --pretty
+            mypy --pretty
           fi
 
       - name: Unit tests
         run: |
+          pip install pytest pytest-cov
           if [ "${ALLOW_TEST_FAILURES}" = "true" ]; then
-            uvx pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml || true
+            pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml || true
           else
-            uvx pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml
+            pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml
           fi
 
       - name: Bandit (SAST)
         run: |
-          uvx bandit -q -r . -f json -o bandit.json || true
+          pip install bandit
+          bandit -q -r . -f json -o bandit.json || true
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
             python -c "import json,sys; d=json.load(open('bandit.json')); (print('Bandit found issues') or sys.exit(1)) if d.get('results') else print('Bandit found no issues')"
           fi
@@ -68,21 +71,24 @@ jobs:
 
       - name: pip-audit
         run: |
-          uvx pip-audit -f json -o pip_audit.json || true
+          pip install pip-audit
+          pip-audit -f json -o pip_audit.json || true
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
             python -c "import json,sys; d=json.load(open('pip_audit.json')); (print('pip-audit found issues') or sys.exit(1)) if d else print('pip-audit no findings')"
           fi
 
       - name: Safety
         run: |
-          uvx safety check -o safety.json --json || true
+          pip install safety
+          safety check -o safety.json --json || true
           if [ "${FAIL_ON_SECURITY}" = "true" ]; then
             python -c "import json,sys; d=json.load(open('safety.json')); (print('Safety found issues') or sys.exit(1)) if d.get('vulnerabilities') else print('Safety no findings')"
           fi
 
       - name: SBOM
         run: |
-          uvx cyclonedx-bom -o sbom.json || true
+          pip install cyclonedx-bom
+          cyclonedx-bom -o sbom.json || true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
