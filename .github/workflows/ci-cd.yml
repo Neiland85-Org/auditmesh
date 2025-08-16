@@ -57,14 +57,8 @@ jobs:
             security-report.json
             safety-report.json
 
-      - name: 🔍 Run CodeQL Analysis
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          queries: security-and-quality
-
-      - name: 🔍 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      # CodeQL analysis is handled by GitHub's default setup
+      # Análisis de CodeQL manejado por configuración por defecto de GitHub
 
   test:
     name: 🧪 Testing Suite
