@@ -70,5 +70,4 @@ jobs:
       - name: 📧 Send Release Notification
         run: |
           echo "🎉 Release ${{ github.ref_name || github.event.inputs.version }} created successfully!"
-          echo "📋 Release URL: ${{ needs.create_release.outputs.upload_url }}"
           echo "📊 Assets uploaded: RELEASE_NOTES.md"
