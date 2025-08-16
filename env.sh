@@ -38,7 +38,7 @@ fi
 export GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # Container Registry URLs
-export REGISTRY="${DOCKER_REGISTRY}/${DOCKER_NAMESPACE}"
+export REGISTRY="${DOCKER_REGISTRY}/$(echo ${DOCKER_NAMESPACE} | tr '[:upper:]' '[:lower:]')"
 
 echo "✅ Environment variables loaded:"
 echo "   GITHUB_ORG: ${GITHUB_ORG}"

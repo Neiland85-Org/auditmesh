@@ -1,0 +1,22 @@
+{
+  "name": "ms-lie-detector",
+  "version": "1.0.0",
+  "description": "AuditMesh Lie Detector Service - AI-powered truth verification",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai",
+    "lie-detector",
+    "auditmesh",
+    "microservice"
+  ],
+  "author": "Neiland85",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
