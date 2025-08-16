@@ -1,0 +1,62 @@
+# AuditMesh CI/CD Configuration
+# This file contains configuration for the CI/CD pipeline
+
+# Environment Configuration
+environments:
+  staging:
+    name: Staging
+    url: https://staging.auditmesh.com
+    protection_rules:
+      required_reviewers: 1
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: false
+
+  production:
+    name: Production
+    url: https://auditmesh.com
+    protection_rules:
+      required_reviewers: 2
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+
+# Testing Configuration
+testing:
+  coverage_threshold: 80
+  parallel_jobs: 3
+  timeout_minutes: 30
+
+# Security Configuration
+security:
+  scan_types:
+    - bandit
+    - safety
+    - codeql
+    - trivy
+
+  severity_levels:
+    - CRITICAL
+    - HIGH
+    - MEDIUM
+    - LOW
+
+# Deployment Configuration
+deployment:
+  strategy: rolling
+  health_check_timeout: 300
+  rollback_on_failure: true
+
+# Notification Configuration
+notifications:
+  slack:
+    channel: "#auditmesh-deployments"
+    webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  email:
+    recipients:
+      - "devops@auditmesh.com"
+      - "security@auditmesh.com"
+
+# Artifact Retention
+artifacts:
+  retention_days: 30
+  max_size_mb: 1000
