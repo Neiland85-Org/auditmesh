@@ -13,7 +13,11 @@ export default function LiveMetrics() {
   const [metrics, setMetrics] = useState<MetricData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const [isLoading, setIsLoading] = useState(true)
+  const isMounted = useRef(true)
+
   useEffect(() => {
+    isMounted.current = true
     // Simulate real-time data
     const generateData = () => {
       const now = new Date()
