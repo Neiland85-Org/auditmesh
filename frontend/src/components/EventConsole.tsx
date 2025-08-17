@@ -59,7 +59,15 @@ export default function EventConsole() {
       })
     } catch (error) {
       setErrors(['Failed to send event'])
-    } finally {
+      // Simulate delay and mock response for development
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setResult({
+        event_id: `evt_${Math.random().toString(36).substr(2, 9)}`,
+        trace_id: `trace_${Math.random().toString(36).substr(2, 9)}`,
+        root: `root_${Math.random().toString(36).substr(2, 16)}`
+      });
+      // Uncomment below to use real backend instead of mock
+      /*
       // TODO: Replace '/api/events' with your actual backend endpoint
       const response = await fetch('/api/events', {
         method: 'POST',
