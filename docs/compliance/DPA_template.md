@@ -70,7 +70,9 @@ terminar el contrato de servicio principal.
 
 - **Performance Monitoring:** Optimize service delivery and reliability
 
-## 🔐 **4. Types of Personal Data and Categories of Data Subjects / Tipos de Datos Personales y Categorías de Interesados**
+## 🔐 **4. Types of Personal Data and Categories of Data Subjects / Tipos de Datos Personales y Categorías de 
+
+Interesados**
 
 ### 4.1 **Types of Personal Data / Tipos de Datos Personales**
 
@@ -335,3 +337,4 @@ conflicto de leyes.
 **© 2025 Neiland85-Org. All rights reserved.**
 
 **For questions about this DPA, contact: legal@auditmesh.com**
+

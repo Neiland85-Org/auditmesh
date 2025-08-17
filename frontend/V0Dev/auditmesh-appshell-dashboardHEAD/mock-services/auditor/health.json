@@ -1,0 +1,15 @@
+{
+  "status": "ok",
+  "service": "auditor",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "uptime": 99.9,
+  "responseTime": 32,
+  "processed": 2156,
+  "consumed": 2134,
+  "version": "1.8.2",
+  "dependencies": {
+    "blockchain": "healthy",
+    "database": "healthy",
+    "storage": "healthy"
+  }
+}

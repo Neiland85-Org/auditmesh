@@ -1,0 +1,51 @@
+# AuditMesh Frontend - Requirements
+# Este archivo documenta las dependencias y requisitos del proyecto
+
+## Dependencias Principales
+- Node.js >= 18.0.0
+- npm >= 9.0.0 o pnpm >= 8.0.0
+
+## Dependencias de Producción
+- React 19.1.1
+- React DOM 19.1.1
+- TypeScript ~5.8.3
+- Vite 7.1.2
+- TailwindCSS 4.1.12
+- Framer Motion 12.23.12
+- Recharts 3.1.2
+- Zustand 5.0.7
+- Radix UI Components
+  - @radix-ui/react-label 2.1.7
+  - @radix-ui/react-select 2.2.6
+  - @radix-ui/react-slot 1.2.3
+
+## Dependencias de Desarrollo
+- ESLint 9.33.0
+- TypeScript ESLint 8.39.1
+- Vite Plugin React 5.0.0
+
+## Configuración del Sistema
+- Puerto del servidor de desarrollo: 5173
+- Puerto del servidor de preview: 4173
+- Navegadores soportados: Chrome >= 90, Firefox >= 88, Safari >= 14
+
+## Scripts Disponibles
+- `npm run dev` - Inicia el servidor de desarrollo
+- `npm run build` - Construye la aplicación para producción
+- `npm run preview` - Previsualiza la build de producción
+- `npm run lint` - Ejecuta el linter
+- `npm run env:check` - Valida las variables de entorno
+
+## Variables de Entorno Requeridas
+- Ver archivo `env.example` para la configuración completa
+
+## Notas de Instalación
+1. Instalar dependencias: `npm install` o `pnpm install`
+2. Configurar variables de entorno: copiar `env.example` a `.env`
+3. Ejecutar `npm run dev` para desarrollo local
+4. Ejecutar `npm run build` para producción
+
+## Compatibilidad
+- Sistema operativo: macOS, Linux, Windows
+- Arquitectura: x64, ARM64
+- Node.js: LTS (18.x o superior recomendado)

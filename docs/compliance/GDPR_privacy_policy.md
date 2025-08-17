@@ -253,3 +253,4 @@ No recopilamos intencionalmente categorías especiales de datos personales segú
 **© 2025 Neiland85-Org. All rights reserved.**
 
 **For questions about this policy, contact: privacy@auditmesh.com**
+
