@@ -1,7 +1,10 @@
 import { fontFamily } from "tailwindcss/defaultTheme"
 
 /** @type {import('tailwindcss').Config} */
-export default {
+const { fontFamily } = require("tailwindcss/defaultTheme");
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
