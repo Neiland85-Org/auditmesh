@@ -13,7 +13,6 @@ export default function LiveMetrics() {
   const [metrics, setMetrics] = useState<MetricData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const [isLoading, setIsLoading] = useState(true)
   const isMounted = useRef(true)
 
   useEffect(() => {
