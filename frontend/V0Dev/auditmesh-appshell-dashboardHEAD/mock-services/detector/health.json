@@ -1,0 +1,22 @@
+{
+  "status": "warning",
+  "service": "detector",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "uptime": 97.2,
+  "responseTime": 78,
+  "processed": 892,
+  "consumed": 856,
+  "version": "2.1.0",
+  "dependencies": {
+    "ml_engine": "degraded",
+    "database": "healthy",
+    "message_queue": "healthy"
+  },
+  "alerts": [
+    {
+      "level": "warning",
+      "message": "ML engine response time elevated",
+      "timestamp": "2024-01-15T10:25:00Z"
+    }
+  ]
+}

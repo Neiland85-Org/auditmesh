@@ -400,3 +400,4 @@ the Trust Services Criteria: Security, Availability, Processing Integrity, Confi
 **© 2025 Neiland85-Org. All rights reserved.**
 
 **For questions about SOC 2 compliance, contact: compliance@auditmesh.com**
+

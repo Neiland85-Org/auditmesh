@@ -28,3 +28,4 @@ integración de nuevas tecnologías o adaptadores.
 - Contratos de eventos versionados para facilitar la evolución y compatibilidad.
 
 - Mayor facilidad para auditoría y trazabilidad de los flujos de negocio.
+
