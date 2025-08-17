@@ -1,0 +1,29 @@
+# Local development overrides
+# This file is automatically loaded by docker-compose
+version: '3.8'
+
+services:
+  web:
+    environment:
+      - VITE_API_BASE=http://localhost:3000
+      - VITE_NODE_ENV=development
+      - VITE_ENABLE_DEBUG_MODE=true
+    volumes:
+      - ./web/src:/app/src:cached
+      - ./web/public:/app/public:cached
+    ports:
+      - "5173:5173"
+
+  ms-gateway:
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+    volumes:
+      - ./gateway:/app:cached
+      - /app/node_modules
+
+  database:
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=auditmesh_dev
