@@ -1,5 +1,9 @@
+import { fontFamily } from "tailwindcss/defaultTheme"
 /** @type {import('tailwindcss').Config} */
-export default {
+const { fontFamily } = require("tailwindcss/defaultTheme");
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,22 +11,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      // Design Tokens - AuditMesh Console
       colors: {
-        // AuditMesh Brand Colors
-        primary: {
-          50: 'hsl(var(--primary-50))',
-          100: 'hsl(var(--primary-100))',
-          200: 'hsl(var(--primary-200))',
-          300: 'hsl(var(--primary-300))',
-          400: 'hsl(var(--primary-400))',
-          500: 'hsl(var(--primary-500))',
-          600: 'hsl(var(--primary-600))',
-          700: 'hsl(var(--primary-700))',
-          800: 'hsl(var(--primary-800))',
-          900: 'hsl(var(--primary-900))',
-          950: 'hsl(var(--primary-950))',
-        },
-        // Brand colors for the new design - Forensic Blue Theme
+        // Primary Brand Colors (Forensic Blue)
         brand: {
           50: '#f0f9ff',
           100: '#e0f2fe',
@@ -36,40 +27,86 @@ export default {
           900: '#0c4a6e',
           950: '#082f49',
         },
-        // Service-specific colors
-        gateway: {
-          500: 'hsl(var(--gateway-500))',
-          600: 'hsl(var(--gateway-600))',
+        // Semantic Status Colors
+        status: {
+          ok: '#10b981',      // Emerald-500
+          down: '#ef4444',    // Red-500
+          warning: '#f59e0b', // Amber-500
+          unknown: '#6b7280', // Gray-500
         },
-        detector: {
-          500: 'hsl(var(--detector-500))',
-          600: 'hsl(var(--detector-600))',
+        // Neutral Scale
+        neutral: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
         },
-        auditor: {
-          500: 'hsl(var(--auditor-500))',
-          600: 'hsl(var(--auditor-600))',
-        },
-        // Background colors
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: 'hsl(var(--card))',
-        cardForeground: 'hsl(var(--card-foreground))',
-        popover: 'hsl(var(--popover))',
-        popoverForeground: 'hsl(var(--popover-foreground))',
-        muted: 'hsl(var(--muted))',
-        mutedForeground: 'hsl(var(--muted-foreground))',
-        accent: 'hsl(var(--accent))',
-        accentForeground: 'hsl(var(--accent-foreground))',
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        // Surface Colors
+        surface: {
+          primary: 'hsl(var(--surface-primary))',
+          secondary: 'hsl(var(--surface-secondary))',
+          tertiary: 'hsl(var(--surface-tertiary))',
+          accent: 'hsl(var(--surface-accent))',
+        }
       },
+
+      // Border Radius Tokens
+      borderRadius: {
+        'xs': '0.25rem',    // 4px
+        'sm': '0.375rem',   // 6px
+        'md': '0.5rem',     // 8px
+        'lg': '0.75rem',    // 12px
+        'xl': '1rem',       // 16px
+        '2xl': '1.5rem',    // 24px
+        '3xl': '2rem',      // 32px
+      },
+
+      // Shadow Tokens
+      boxShadow: {
+        'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        'sm': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+        '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+        // Custom Glow Shadows
+        'glow-sm': '0 0 20px 0 rgb(14 165 233 / 0.15)',
+        'glow-md': '0 0 30px 0 rgb(14 165 233 / 0.2)',
+        'glow-lg': '0 0 40px 0 rgb(14 165 233 / 0.25)',
+        'glow-xl': '0 0 50px 0 rgb(14 165 233 / 0.3)',
+      },
+
+      // Spacing Tokens (8px grid system)
+      spacing: {
+        '18': '4.5rem',    // 72px
+        '88': '22rem',     // 352px
+        '128': '32rem',    // 512px
+      },
+
+      // Grid System
+      gridTemplateColumns: {
+        '12': 'repeat(12, minmax(0, 1fr))',
+        '13': 'repeat(13, minmax(0, 1fr))',
+        '14': 'repeat(14, minmax(0, 1fr))',
+        '15': 'repeat(15, minmax(0, 1fr))',
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
+
+      // Animation Tokens
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'glow': 'glow 2s ease-in-out infinite alternate',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in': 'fadeIn 0.2s ease-out',
+        'slide-up': 'slideUp 0.2s ease-out',
+        'scale-in': 'scaleIn 0.2s ease-out',
+        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
       },
+
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
@@ -79,24 +116,31 @@ export default {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
-        glow: {
-          '0%': { boxShadow: '0 0 20px hsl(var(--primary-500))' },
-          '100%': { boxShadow: '0 0 30px hsl(var(--primary-500)), 0 0 40px hsl(var(--primary-500))' },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        glowPulse: {
+          '0%, 100%': { boxShadow: '0 0 20px 0 rgb(14 165 233 / 0.15)' },
+          '50%': { boxShadow: '0 0 30px 0 rgb(14 165 233 / 0.25)' },
         },
       },
-      backdropBlur: {
-        xs: '2px',
-      },
-      backgroundImage: {
-        'grid': 'linear-gradient(#1f2937 1px, transparent 1px), linear-gradient(90deg, #1f2937 1px, transparent 1px)',
-      },
-      boxShadow: {
-        'glow': '0 0 40px 8px rgba(45,143,255,0.25)',
-        'glow-sm': '0 0 20px 4px rgba(45,143,255,0.15)',
-        'glow-lg': '0 0 60px 12px rgba(45,143,255,0.35)',
-      },
+
+      // Typography
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', ...fontFamily.sans],
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+      },
+
+      // Backdrop Blur
+      backdropBlur: {
+        'xs': '2px',
+        'sm': '4px',
+        'md': '8px',
+        'lg': '12px',
+        'xl': '16px',
+        '2xl': '24px',
+        '3xl': '40px',
       },
     },
   },

@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "env:check": "node scripts/validate-env.js",
+    "env:validate": "node scripts/validate-env.js",
+    "env:help": "node scripts/validate-env.js --help"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.12",

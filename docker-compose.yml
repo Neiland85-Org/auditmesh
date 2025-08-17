@@ -67,6 +67,37 @@ services:
     networks:
       - auditmesh-network
 
+  auditmesh-frontend:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 18-alpine
+    image: ${REGISTRY:-ghcr.io/neiland85-org}/auditmesh-frontend:${GIT_SHA:-dev}
+    container_name: auditmesh-frontend
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - VITE_API_BASE_URL=http://ms-gateway:3000
+      - VITE_GATEWAY_URL=http://ms-gateway:3000
+      - VITE_DETECTOR_URL=http://ms-lie-detector:3001
+      - VITE_AUDITOR_URL=http://ms-auditor:3002
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      - ms-gateway
+      - ms-lie-detector
+      - ms-auditor
+    networks:
+      - auditmesh-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 networks:
   auditmesh-network:
     driver: bridge

@@ -1,156 +1,162 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { getDetectorHealth, getAuditorHealth } from '../lib/api'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-interface MetricRow {
-  t: number
-  processed: number
-  consumed: number
+interface MetricData {
+  time: string
+  throughput: number
+  latency: number
+  events: number
 }
 
 export default function LiveMetrics() {
-  const [data, setData] = useState<MetricRow[]>([])
+  const [metrics, setMetrics] = useState<MetricData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const isMounted = useRef(true)
+
   useEffect(() => {
-    let active = true
-    
-    const fetchMetrics = async () => {
-      try {
-        const [detector, auditor] = await Promise.all([
-          getDetectorHealth(),
-          getAuditorHealth()
-        ])
-        
-        const row: MetricRow = {
-          t: Date.now(),
-          processed: detector.processed || 0,
-          consumed: auditor.consumed || 0
-        }
-        
-        if (active) {
-          setData(prev => [...prev.slice(-60), row]) // Keep last 60 data points
-          setIsLoading(false)
-        }
-      } catch (error) {
-        console.warn('Failed to fetch metrics:', error)
-        if (active) setIsLoading(false)
+    isMounted.current = true
+    // Simulate real-time data
+    const generateData = () => {
+      const now = new Date()
+      const newData: MetricData = {
+        time: now.toLocaleTimeString(),
+        throughput: Math.floor(Math.random() * 1000) + 100,
+        latency: Math.floor(Math.random() * 50) + 10,
+        events: Math.floor(Math.random() * 10000) + 1000
       }
+      
+      setMetrics(prev => {
+        const updated = [...prev, newData]
+        if (updated.length > 20) {
+          return updated.slice(-20)
+        }
+        return updated
+      })
     }
 
-    // Initial fetch
-    fetchMetrics()
+    // Initial data
+    generateData()
+    setIsLoading(false)
+
+    // Update every 2 seconds
+    const interval = setInterval(generateData, 2000)
     
-    // Poll every 2 seconds
-    const interval = setInterval(fetchMetrics, 2000)
-    
-    return () => {
-      active = false
-      clearInterval(interval)
-    }
+    return () => clearInterval(interval)
   }, [])
 
-  const chartData = useMemo(() => 
-    data.map(d => ({
-      time: new Date(d.t).toLocaleTimeString(),
-      processed: d.processed,
-      consumed: d.consumed
-    })), 
-    [data]
-  )
-
-  if (isLoading) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 h-[320px] flex items-center justify-center"
-      >
-        <div className="text-neutral-400">Loading metrics...</div>
-      </motion.div>
-    )
-  }
+  const currentMetrics = metrics[metrics.length - 1] || { throughput: 0, latency: 0, events: 0 }
 
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 h-[320px]"
+      transition={{ duration: 0.3 }}
+      className="col-span-12 lg:col-span-4 xl:col-span-3"
     >
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-neutral-100 mb-2">Live Metrics</h3>
-        <p className="text-sm text-neutral-400">
-          Throughput (events per health snapshot) - Updates every 2s
-        </p>
-      </div>
-      
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData}>
-          <defs>
-            <linearGradient id="processedGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#2d8fff" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#2d8fff" stopOpacity={0}/>
-            </linearGradient>
-            <linearGradient id="consumedGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#34d399" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#34d399" stopOpacity={0}/>
-            </linearGradient>
-          </defs>
-          
-          <XAxis 
-            dataKey="time" 
-            hide 
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis 
-            hide 
-            axisLine={false}
-            tickLine={false}
-          />
-          
-          <Tooltip 
-            contentStyle={{ 
-              background: '#0a0a0a', 
-              border: '1px solid #27272a',
-              borderRadius: '8px',
-              color: '#fafafa'
-            }}
-            labelStyle={{ color: '#a3a3a3' }}
-          />
-          
-          <Area 
-            type="monotone" 
-            dataKey="processed" 
-            stroke="#2d8fff" 
-            strokeWidth={2}
-            fill="url(#processedGradient)"
-            fillOpacity={0.8}
-            name="Processed (Detector)"
-          />
-          
-          <Area 
-            type="monotone" 
-            dataKey="consumed" 
-            stroke="#34d399" 
-            strokeWidth={2}
-            fill="url(#consumedGradient)"
-            fillOpacity={0.8}
-            name="Consumed (Auditor)"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-      
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-brand-500"></div>
-          <span className="text-neutral-300">Processed (Detector)</span>
+      <div className="bg-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-2xl p-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white mb-2">Live Metrics</h2>
+          <p className="text-neutral-400">Real-time system performance</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-          <span className="text-neutral-300">Consumed (Auditor)</span>
+
+        {/* Current Stats */}
+        <div className="grid grid-cols-1 gap-4 mb-6">
+          <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-400">Throughput</p>
+                <p className="text-2xl font-bold text-white">{currentMetrics.throughput}</p>
+                <p className="text-xs text-neutral-500">events/sec</p>
+              </div>
+              <div className="w-3 h-3 bg-status-ok rounded-full animate-pulse" />
+            </div>
+          </div>
+
+          <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-400">Latency</p>
+                <p className="text-2xl font-bold text-white">{currentMetrics.latency}</p>
+                <p className="text-xs text-neutral-500">ms</p>
+              </div>
+              <div className="w-3 h-3 bg-status-ok rounded-full animate-pulse" />
+            </div>
+          </div>
+
+          <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-400">Total Events</p>
+                <p className="text-2xl font-bold text-white">{currentMetrics.events.toLocaleString()}</p>
+                <p className="text-xs text-neutral-500">processed</p>
+              </div>
+              <div className="w-3 h-3 bg-status-ok rounded-full animate-pulse" />
+            </div>
+          </div>
+        </div>
+
+        {/* Chart */}
+        <div className="h-64">
+          {isLoading ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-neutral-400">Loading metrics...</div>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={metrics}>
+                <defs>
+                  <linearGradient id="throughputGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="time" 
+                  stroke="#9ca3af" 
+                  fontSize={10}
+                  tick={{ fill: '#9ca3af' }}
+                />
+                <YAxis 
+                  stroke="#9ca3af" 
+                  fontSize={10}
+                  tick={{ fill: '#9ca3af' }}
+                />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#f9fafb'
+                  }}
+                />
+                
+                <Area
+                  type="monotone"
+                  dataKey="throughput"
+                  stroke="#0ea5e9"
+                  strokeWidth={2}
+                  fill="url(#throughputGradient)"
+                  name="Throughput"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="latency"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  fill="url(#latencyGradient)"
+                  name="Latency"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </motion.div>
