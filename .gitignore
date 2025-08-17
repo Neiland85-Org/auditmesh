@@ -24,6 +24,13 @@ coverage/
 **/coverage-final.json
 **/lcov.info
 
+# Frontend Environment Variables
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+frontend/.env.staging
+
 # Docker
 *.log
 dist/
