@@ -21,7 +21,10 @@ export DOCKER_USERNAME
 export DOCKER_PLATFORM="linux/amd64"
 
 # Services Configuration
-export SERVICES=("ms-gateway" "ms-lie-detector" "ms-auditor")
+export SERVICES=("ms-gateway" "ms-lie-detector" "ms-auditor" "auditmesh-frontend")
+
+# Frontend Configuration
+export FRONTEND_PORT="5173"
 
 # Development Environment
 export NODE_ENV="development"
