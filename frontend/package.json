@@ -11,7 +11,15 @@
     "preview": "vite preview",
     "env:check": "node scripts/validate-env.js",
     "env:validate": "node scripts/validate-env.js",
-    "env:help": "node scripts/validate-env.js --help"
+    "env:help": "node scripts/validate-env.js --help",
+    "compliance:check": "node scripts/compliance-checker.js",
+    "compliance:report": "node scripts/compliance-checker.js --report",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:fix": "npm audit fix",
+    "build:secure": "vite build --config vite.config.security.ts",
+    "build:prod": "vite build --config vite.config.prod.ts",
+    "preview:prod": "vite preview --config vite.config.prod.ts",
+    "deploy:check": "npm run security:audit && npm run build:prod"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",

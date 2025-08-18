@@ -1,0 +1,14 @@
+src//components/EventConsole.tsx:    actor: '{"id": "user:demo", "type": "user"}',
+src//components/EventConsole.tsx:              placeholder='{"id": "user:demo", "type": "user"}'
+src//components/EventPublisher.tsx:  const [actor, setActor] = useState('{"id":"user:demo","type":"user"}')
+src//components/EventPublisher.tsx:            placeholder='{"id":"user:demo","type":"user"}'
+src//components/v0dev/V0DevDemo.tsx:// Datos de ejemplo para la demostración
+src//lib/utils.ts: * Función utilitaria para validar emails
+src//lib/utils.ts: * Valida el formato de email de manera simple
+src//lib/utils.ts: * @param email - Email a validar
+src//lib/utils.ts: * @returns Boolean indicando si el email es válido
+src//lib/utils.ts: * isValidEmail("user@example.com") // Resultado: true
+src//lib/utils.ts: * isValidEmail("invalid-email") // Resultado: false
+src//lib/utils.ts:export function isValidEmail(email: string): boolean {
+src//lib/utils.ts:  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+src//lib/utils.ts:  return emailRegex.test(email)

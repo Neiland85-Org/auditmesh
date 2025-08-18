@@ -1,245 +1,172 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import AppShell from './components/AppShell'
-import ServiceCard from './components/ServiceCard'
-import EventConsole from './components/EventConsole'
-import LiveMetrics from './components/LiveMetrics'
+"use client"
 
-type ServiceStatus = 'ok' | 'down' | 'unknown'
+import AppShell from "@/components/app-shell"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { motion } from "framer-motion"
+import { Shield, Database, Clock, Users, AlertCircle, CheckCircle2 } from "lucide-react"
+import ServiceCard3D from "@/components/service-card-3d"
+import { AnimatedText } from "@/components/animated-text"
+import { EventConsole3D } from "@/components/event-console-3d"
+import { LiveMetrics } from "@/components/live-metrics"
+import type { ServiceHealth } from "@/hooks/use-service-health"
 
-interface ServiceState {
-  gateway: ServiceStatus
-  detector: ServiceStatus
-  auditor: ServiceStatus
-}
+export default function HomePage() {
+  const recentEvents = [
+    { id: 1, type: "audit", message: "User authentication verified", timestamp: "2 min ago", status: "success" },
+    { id: 2, type: "security", message: "Anomaly detected in data access", timestamp: "5 min ago", status: "warning" },
+    { id: 3, type: "system", message: "Backup completed successfully", timestamp: "12 min ago", status: "success" },
+    {
+      id: 4,
+      type: "compliance",
+      message: "Monthly compliance report generated",
+      timestamp: "1 hour ago",
+      status: "info",
+    },
+  ]
 
-function useServiceStatuses() {
-  const [services, setServices] = useState<ServiceState>({
-    gateway: 'unknown',
-    detector: 'unknown',
-    auditor: 'unknown'
-  })
+  const microservices = [
+    {
+      name: "Gateway Service",
+      serviceUrl: "http://localhost:3000",
+      subtitle: "API Gateway & Load Balancer",
+    },
+    {
+      name: "Detector Service",
+      serviceUrl: "http://localhost:3001",
+      subtitle: "Anomaly Detection Engine",
+    },
+    {
+      name: "Auditor Service",
+      serviceUrl: "http://localhost:3002",
+      subtitle: "Audit Trail Processor",
+    },
+  ]
 
-  useEffect(() => {
-    let active = true
-    
-    const pollServices = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        if (active) {
-          setServices({
-            gateway: Math.random() > 0.3 ? 'ok' : 'down',
-            detector: Math.random() > 0.2 ? 'ok' : 'down',
-            auditor: Math.random() > 0.25 ? 'ok' : 'down'
-          })
-        }
-      } catch (error) {
-        if (active) {
-          setServices({ gateway: 'down', detector: 'down', auditor: 'down' })
-        }
-      }
-    }
-
-    pollServices()
-    const interval = setInterval(pollServices, 5000)
-    
-    return () => {
-      active = false
-      clearInterval(interval)
-    }
-  }, [])
-
-  return services
-}
-
-export default function App() {
-  const { gateway, detector, auditor } = useServiceStatuses()
+  const handleServiceClick = (health: ServiceHealth) => {
+    console.log("[v0] Service clicked, health data:", health)
+    // TODO: Open sidebar panel with detailed service information
+    alert(`Premium Feature: Detailed ${health.status} service analytics coming soon!`)
+  }
 
   return (
     <AppShell>
-      {/* Hero Section */}
-      <motion.section 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="col-span-12 text-center mb-16"
-      >
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="inline-block mb-6"
-        >
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-500 to-brand-600 p-1">
-            <div className="w-full h-full rounded-3xl bg-neutral-950 flex items-center justify-center">
-              <div className="text-3xl">🛡️</div>
-            </div>
-          </div>
-        </motion.div>
-        
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-5xl sm:text-6xl font-bold mb-6"
-        >
-          <span className="bg-gradient-to-r from-brand-400 to-brand-500 bg-clip-text text-transparent">
-            Realtime Audit
-          </span>
-          <br />
-          <span className="text-white">& Proofs</span>
-        </motion.h1>
-        
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="max-w-3xl mx-auto text-xl text-neutral-300 leading-relaxed"
-        >
-          Dispara eventos, observa el pipeline EDA y verifica la cadena Merkle en vivo. 
-          <br />
-          <span className="text-neutral-400">Integrado con Redpanda, OpenTelemetry y Jaeger.</span>
-        </motion.p>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex items-center justify-center gap-6 mt-8"
-        >
-          <div className="px-4 py-2 rounded-2xl bg-neutral-800/50 border border-neutral-700/50">
-            <div className="text-2xl font-bold text-white">3</div>
-            <div className="text-sm text-neutral-400">Microservicios</div>
-          </div>
-          <div className="px-4 py-2 rounded-2xl bg-neutral-800/50 border border-neutral-700/50">
-            <div className="text-2xl font-bold text-white">∞</div>
-            <div className="text-sm text-neutral-400">Eventos</div>
-          </div>
-          <div className="px-4 py-2 rounded-2xl bg-neutral-800/50 border border-neutral-700/50">
-            <div className="text-2xl font-bold text-white">🔒</div>
-            <div className="text-sm text-neutral-400">Seguro</div>
-          </div>
-        </motion.div>
-      </motion.section>
-
-      {/* Service Status Cards */}
-      <motion.section 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.0 }}
-        className="col-span-12 mb-16"
-      >
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="text-center mb-8"
-        >
-          <h2 className="text-3xl font-bold text-white mb-2">Estado de Servicios</h2>
-          <p className="text-neutral-400">Monitoreo en tiempo real de la infraestructura</p>
-        </motion.div>
-        
-        <div className="grid grid-cols-12 gap-6">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 1.4 }}
-            className="col-span-12 md:col-span-4"
-          >
-            <ServiceCard 
-              name="Gateway" 
-              status={gateway} 
-              subtitle="ms-gateway"
-              kpi="API Gateway Service"
-              variant="default"
+      <div className="space-y-8">
+        {/* Dashboard Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <AnimatedText
+              text="Dashboard"
+              className="text-3xl font-bold text-foreground"
+              animation="staggerLetters"
+              delay={200}
             />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.6 }}
-            className="col-span-12 md:col-span-4"
-          >
-            <ServiceCard 
-              name="Lie Detector" 
-              status={detector} 
-              subtitle="ms-lie-detector"
-              kpi="Event Processing Service"
-              variant="default"
-            />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 1.8 }}
-            className="col-span-12 md:col-span-4"
-          >
-            <ServiceCard 
-              name="Auditor" 
-              status={auditor} 
-              subtitle="ms-auditor"
-              kpi="Proof Generation Service"
-              variant="default"
-            />
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Main Content Area */}
-      <motion.section 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 2.0 }}
-        className="col-span-12"
-      >
-        <div className="grid grid-cols-12 gap-6">
-          <EventConsole />
-          <LiveMetrics />
-        </div>
-      </motion.section>
-
-      {/* Footer */}
-      <motion.footer 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 2.8 }}
-        className="col-span-12 mt-20 text-center"
-      >
-        <div className="py-8 border-t border-neutral-800/50">
-          <div className="text-neutral-400 mb-4">
-            © {new Date().getFullYear()} AuditMesh - Enterprise Audit & Proof Management
+            <p className="text-muted-foreground">Monitor your audit infrastructure in real-time</p>
           </div>
-          <div className="flex items-center justify-center gap-6 text-sm">
-            <a 
-              href="http://localhost:8080" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neutral-400 hover:text-brand-400 transition-colors"
-            >
-              Redpanda Console
-            </a>
-            <a 
-              href="http://localhost:16686" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neutral-400 hover:text-brand-400 transition-colors"
-            >
-              Jaeger
-            </a>
-            <a 
-              href="http://localhost:9001" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neutral-400 hover:text-brand-400 transition-colors"
-            >
-              MinIO
-            </a>
-          </div>
+          <Button className="bg-primary hover:bg-primary/90 shadow-glow">Generate Report</Button>
         </div>
-      </motion.footer>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {microservices.map((service, index) => (
+            <motion.div
+              key={service.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <ServiceCard3D
+                name={service.name}
+                serviceUrl={service.serviceUrl}
+                subtitle={service.subtitle}
+                onClick={handleServiceClick}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* LiveMetrics Dashboard */}
+        <LiveMetrics services={microservices.map((service) => service.serviceUrl)} className="w-full" />
+
+        {/* Event Console */}
+        <EventConsole3D className="w-full" />
+
+        {/* Recent Events */}
+        <Card className="p-6 bg-glass border-glass-border">
+          <div className="flex items-center gap-2 mb-6">
+            <Clock className="h-5 w-5 text-primary" />
+            <AnimatedText
+              text="Recent Events"
+              className="text-xl font-semibold text-foreground"
+              animation="fadeInUp"
+              delay={100}
+            />
+          </div>
+          <div className="space-y-4">
+            {recentEvents.map((event, index) => (
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="flex items-center gap-4 p-3 bg-card/50 rounded-lg border border-border/50"
+              >
+                <div
+                  className={`p-1 rounded-full ${
+                    event.status === "success"
+                      ? "text-green-400"
+                      : event.status === "warning"
+                        ? "text-yellow-400"
+                        : "text-blue-400"
+                  }`}
+                >
+                  {event.status === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                </div>
+                <div className="flex-1">
+                  <p className="text-foreground font-medium">{event.message}</p>
+                  <p className="text-sm text-muted-foreground">{event.timestamp}</p>
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {event.type}
+                </Badge>
+              </motion.div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="p-6 bg-glass border-glass-border">
+          <AnimatedText
+            text="Quick Actions"
+            className="text-xl font-semibold text-foreground mb-4"
+            animation="fadeInUp"
+            delay={150}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-center gap-2 bg-card/30 hover:bg-primary/10 border-border/50"
+            >
+              <Users size={24} />
+              <span>Manage Users</span>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-center gap-2 bg-card/30 hover:bg-primary/10 border-border/50"
+            >
+              <Shield size={24} />
+              <span>Security Audit</span>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-center gap-2 bg-card/30 hover:bg-primary/10 border-border/50"
+            >
+              <Database size={24} />
+              <span>Data Export</span>
+            </Button>
+          </div>
+        </Card>
+      </div>
     </AppShell>
   )
 }

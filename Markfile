@@ -1,0 +1,57 @@
+# Makefile — auditmesh (Fase 3)
+SHELL := /bin/bash
+ARTIFACTS := artifacts
+
+.PHONY: all audit sbom vulns sast secrets iac k8s activity clean
+
+all: audit
+
+.PHONY: docs
+audit: sbom vulns sast secrets iac k8s activity docs
+
+docs:
+	@echo "🧪 Generando badges + summary para docs/"
+	python3 tools/badges.py || true
+
+audit: sbom vulns sast secrets iac k8s activity
+	@echo "✅ Auditoría completa. Artefactos en $(ARTIFACTS)/"
+
+$(ARTIFACTS):
+	mkdir -p $(ARTIFACTS)
+
+sbom: $(ARTIFACTS)
+	@echo "🧾 Generando SBOM (SPDX)…"
+	syft . -o spdx-json=$(ARTIFACTS)/sbom.spdx.json
+
+vulns: $(ARTIFACTS)/sbom.spdx.json
+	@echo "🛡️  Escaneando vulnerabilidades desde SBOM…"
+	grype sbom:$(ARTIFACTS)/sbom.spdx.json -o json > $(ARTIFACTS)/vulns.grype.json || true
+
+sast: $(ARTIFACTS)
+	@echo "🔍 SAST (Semgrep)…"
+	semgrep scan --config auto --sarif -o $(ARTIFACTS)/semgrep.sarif || true
+
+secrets: $(ARTIFACTS)
+	@echo "🔑 Secret scanning (Gitleaks)…"
+	gitleaks detect -s . -f sarif -r $(ARTIFACTS)/gitleaks.sarif || true
+
+iac: $(ARTIFACTS)
+	@echo "🏗️  IaC policies (Checkov)…"
+	checkov -d . -o json > $(ARTIFACTS)/checkov.json || true
+
+k8s: $(ARTIFACTS)
+	@echo "☸️  K8s (Kubescape, si hay manifiestos)…"
+	test -d k8s && kubescape scan framework nsa --format json --output $(ARTIFACTS)/kubescape.json ./k8s || true
+
+activity: $(ARTIFACTS)
+	@echo "📈 Métricas de actividad (git)…"
+	@DEFAULT_BRANCH=$$(git symbolic-ref --short refs/remotes/origin/HEAD | cut -d'/' -f2); \
+	TZ=Europe/Madrid git log "origin/$$DEFAULT_BRANCH" --date=iso-strict-local -1 --format='%cI %h %an: %s' > $(ARTIFACTS)/last_commit.txt; \
+	git rev-list --count --no-merges "origin/$$DEFAULT_BRANCH" > $(ARTIFACTS)/commits_main.txt; \
+	TZ=Europe/Madrid git log --date=format:'%Y-%m' --format='%ad' "origin/$$DEFAULT_BRANCH" | sort | uniq -c | sort -nr > $(ARTIFACTS)/commits_by_month.txt
+	@python3 tools/audit_summary.py --write-md $(ARTIFACTS)/summary.md || true
+
+clean:
+	rm -rf $(ARTIFACTS)
+
+	

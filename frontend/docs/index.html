@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AuditMesh — Quality Dashboard</title>
+<style>
+  :root { --bg:#0b0d10; --fg:#e6e9ef; --muted:#9aa4b2; --card:#13161b; --accent:#4ade80; }
+  body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;margin:0;padding:2rem}
+  .wrap{max-width:1100px;margin:auto}
+  h1{font-size:1.8rem;margin:0 0 1rem 0}
+  .badges{display:flex;flex-wrap:wrap;gap:10px;margin:1rem 0 2rem}
+  .card{background:var(--card);border-radius:14px;padding:1rem;margin:0 0 1rem 0;box-shadow:0 0 0 1px #222}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .muted{color:var(--muted);font-size:0.9rem}
+  canvas{background:transparent}
+  a{color:var(--accent)}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AuditMesh — Quality Dashboard</h1>
+  <p class="muted">Se actualiza en cada push/PR de <a href="https://github.com/Neiland85-Org/auditmesh">Neiland85-Org/auditmesh</a>.</p>
+
+  <div class="badges">
+    <!-- Sustituye <BRANCH> si tu default no es main -->
+    <img alt="Scorecard" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Neiland85-Org/auditmesh/refs/heads/main/docs/badges/scorecard.json"/>
+    <img alt="Vulnerabilities" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Neiland85-Org/auditmesh/refs/heads/main/docs/badges/vulns.json"/>
+    <img alt="Semgrep" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Neiland85-Org/auditmesh/refs/heads/main/docs/badges/semgrep.json"/>
+    <img alt="Gitleaks" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Neiland85-Org/auditmesh/refs/heads/main/docs/badges/gitleaks.json"/>
+    <img alt="Checkov" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Neiland85-Org/auditmesh/refs/heads/main/docs/badges/checkov.json"/>
+    <a href="https://github.com/Neiland85-Org/auditmesh/actions/workflows/auditmesh-audit.yml">
+      <img alt="Workflow" src="https://github.com/Neiland85-Org/auditmesh/actions/workflows/auditmesh-audit.yml/badge.svg"/>
+    </a>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Vulnerabilidades por severidad</h3>
+      <canvas id="vulnChart" width="400" height="300"></canvas>
+    </div>
+    <div class="card">
+      <h3>Commits por mes (últimos 12)</h3>
+      <canvas id="commitChart" width="400" height="300"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Resumen</h3>
+    <pre id="summary" class="muted">Cargando…</pre>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+async function loadSummary(){
+  const resp = await fetch('./assets/summary.json', {cache:'no-store'});
+  const data = await resp.json();
+  document.getElementById('summary').textContent = JSON.stringify(data,null,2);
+
+  // Vulnerabilities chart
+  const v = data.vulnerabilities || {};
+  const vctx = document.getElementById('vulnChart').getContext('2d');
+  new Chart(vctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Critical','High','Medium','Low','Negligible','Unknown'],
+      datasets: [{ data: [v.Critical||0,v.High||0,v.Medium||0,v.Low||0,v.Negligible||0,v.Unknown||0] }]
+    },
+    options: { responsive:true, plugins:{legend:{position:'bottom'}} }
+  });
+
+  // Commits by month chart
+  const m = data.commits_by_month || [];
+  const cctx = document.getElementById('commitChart').getContext('2d');
+  new Chart(cctx, {
+    type: 'bar',
+    data: {
+      labels: m.map(x=>x.month),
+      datasets: [{ label:'Commits', data: m.map(x=>x.count) }]
+    },
+    options: { responsive:true, plugins:{legend:{display:false}} }
+  });
+}
+loadSummary();
+</script>
+</body>
+</html>
+
