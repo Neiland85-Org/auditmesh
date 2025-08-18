@@ -29,7 +29,7 @@ jobs:
       - name: Setup Go (para gitleaks opcional)
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.24"
 
       - name: Instalar herramientas (syft, grype, semgrep, checkov, gitleaks, kubescape)
         run: |
@@ -41,7 +41,7 @@ jobs:
           # grype
           curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
           # gitleaks (vía Go para simplicidad)
-          go install github.com/gitleaks/gitleaks/v8@latest
+          go install github.com/zricethezav/gitleaks/v8@latest
           echo "${HOME}/go/bin" >> $GITHUB_PATH
           # kubescape
           curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
