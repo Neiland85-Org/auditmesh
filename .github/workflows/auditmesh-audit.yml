@@ -49,6 +49,7 @@ jobs:
           python3 --version
           # make audit (eliminado: no existe Makefile ni regla audit)
       - name: Scorecard (supply chain) — acción oficial
+        if: github.ref == 'refs/heads/main'
         uses: ossf/scorecard-action@main
         with:
           results_file: artifacts/scorecard.json
