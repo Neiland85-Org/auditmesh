@@ -57,8 +57,20 @@ jobs:
             security-report.json
             safety-report.json
 
-      # CodeQL analysis is handled by GitHub's default setup
-      # Análisis de CodeQL manejado por configuración por defecto de GitHub
+      - name: 🛠️ Setup Go (for gitleaks)
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: 🕵️ Install gitleaks
+        run: |
+          go install github.com/gitleaks/gitleaks/v8@latest
+          echo "${HOME}/go/bin" >> $GITHUB_PATH
+
+      - name: 🔎 Run gitleaks
+        run: |
+          gitleaks detect --source . --report-path gitleaks-report.json || true
+          echo "✅ Gitleaks scan completed"
 
   test:
     name: 🧪 Testing Suite
@@ -68,7 +80,7 @@ jobs:
       matrix:
         service: [gateway, lie-detector, auditor]
         node-version: [16, 18, 20]
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -133,7 +145,7 @@ jobs:
     needs: [test, docker-build]
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4

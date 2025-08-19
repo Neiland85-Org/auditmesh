@@ -1,43 +1,49 @@
-
 "use client"
+
+import AppShell from "@/components/AppShell"
+import EventConsole from "@/components/EventConsole"
+import LiveMetrics from "@/components/LiveMetrics"
+import ServiceCard3D from "@/components/ServiceCard"
+import { AnimatedText } from "@/components/v0dev/animated-text"
+import { Badge } from "@/components/v0dev/ui/badge"
+import { Button } from "@/components/v0dev/ui/button"
+import { Card } from "@/components/v0dev/ui/card"
 import { motion } from "framer-motion"
 import { AlertCircle, CheckCircle2, Clock, Database, Shield, Users } from "lucide-react"
-import AppShell from "./components/AppShell"
-import EventConsole from "./components/EventConsole"
-import LiveMetrics from "./components/LiveMetrics"
-import ServiceCard3D from "./components/ServiceCard"
-import { AnimatedText } from "./components/v0dev/animated-text"
-import { Badge } from "./components/v0dev/ui/badge"
-import { Button } from "./components/v0dev/ui/button"
-import { Card } from "./components/v0dev/ui/card"
+// import type { ServiceHealth } from "@/hooks/use-service-health"
 
 export default function HomePage() {
   const recentEvents = [
     { id: 1, type: "audit", message: "User authentication verified", timestamp: "2 min ago", status: "success" },
     { id: 2, type: "security", message: "Anomaly detected in data access", timestamp: "5 min ago", status: "warning" },
     { id: 3, type: "system", message: "Backup completed successfully", timestamp: "12 min ago", status: "success" },
-    { id: 4, type: "compliance", message: "Monthly compliance report generated", timestamp: "1 hour ago", status: "info" }
-  ];
+    {
+      id: 4,
+      type: "compliance",
+      message: "Monthly compliance report generated",
+      timestamp: "1 hour ago",
+      status: "info",
+    },
+  ]
+
   const microservices = [
     {
       name: "Gateway Service",
       serviceUrl: "http://localhost:3000",
-      subtitle: "API Gateway & Load Balancer"
+      subtitle: "API Gateway & Load Balancer",
     },
     {
       name: "Detector Service",
       serviceUrl: "http://localhost:3001",
-      subtitle: "Anomaly Detection Engine"
+      subtitle: "Anomaly Detection Engine",
     },
     {
       name: "Auditor Service",
       serviceUrl: "http://localhost:3002",
-      subtitle: "Audit Trail Processor"
+      subtitle: "Audit Trail Processor",
     },
-  ];
-  const handleServiceClick = (serviceUrl: string) => {
-    window.open(serviceUrl, '_blank');
-  };
+  ]
+
   return (
     <AppShell>
       <div className="space-y-8">
@@ -67,7 +73,7 @@ export default function HomePage() {
                 name={service.name}
                 status="ok"
                 subtitle={service.subtitle}
-                onClick={() => handleServiceClick(service.serviceUrl)}
+                onClick={() => window.open(service.serviceUrl, '_blank')}
               />
             </motion.div>
           ))}
@@ -156,6 +162,5 @@ export default function HomePage() {
         </Card>
       </div>
     </AppShell>
-  );
-// ...nada más...
+  )
 }
