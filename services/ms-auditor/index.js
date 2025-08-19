@@ -2,10 +2,23 @@ const express = require('express');
 const { Pool } = require('pg');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
+const helmet = require('helmet');
 const app = express();
 const port = process.env.PORT || 3002;
 
-app.use(express.json());
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: [
+    'http://localhost:3000', // ms-gateway
+    'http://localhost:5173', // frontend
+    process.env.ALLOWED_ORIGINS?.split(',') || []
+  ].filter(Boolean),
+  credentials: true
+}));
+
+app.use(express.json({ limit: '10mb' }));
 
 // Rate limiting configuration
 const limiter = rateLimit({
@@ -179,7 +192,7 @@ app.get('/audit/log', dbLimiter, async (req, res) => {
 app.post('/audit', dbLimiter, async (req, res) => {
   try {
     const { eventId, analysis, originalEvent } = req.body;
-    
+
     // Validate request
     if (!eventId || !analysis || !originalEvent) {
       return res.status(400).json({

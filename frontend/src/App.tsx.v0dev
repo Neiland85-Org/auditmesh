@@ -1,15 +1,16 @@
 "use client"
 
+import AppShell from "@/components/AppShell"
+import EventConsole from "@/components/EventConsole"
+import LiveMetrics from "@/components/LiveMetrics"
+import ServiceCard3D from "@/components/ServiceCard"
+import { AnimatedText } from "@/components/v0dev/animated-text"
+import { Badge } from "@/components/v0dev/ui/badge"
+import { Button } from "@/components/v0dev/ui/button"
+import { Card } from "@/components/v0dev/ui/card"
 import { motion } from "framer-motion"
 import { AlertCircle, CheckCircle2, Clock, Database, Shield, Users } from "lucide-react"
-import AppShell from "./components/AppShell"
-import EventConsole from "./components/EventConsole"
-import LiveMetrics from "./components/LiveMetrics"
-import ServiceCard3D from "./components/ServiceCard"
-import { AnimatedText } from "./components/v0dev/animated-text"
-import { Badge } from "./components/v0dev/ui/badge"
-import { Button } from "./components/v0dev/ui/button"
-import { Card } from "./components/v0dev/ui/card"
+// import type { ServiceHealth } from "@/hooks/use-service-health"
 
 export default function HomePage() {
   const recentEvents = [
