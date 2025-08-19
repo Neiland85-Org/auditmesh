@@ -64,9 +64,9 @@ jobs:
           name: auditmesh-artifacts
           path: artifacts/
           if-no-files-found: warn
-      - name: Generar badges + summary (docs/)
-        run: |
-          make docs
+      # - name: Generar badges + summary (docs/)
+      #   run: |
+      #     make docs
       - name: Commit y push de docs (badges + summary)
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
