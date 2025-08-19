@@ -22,17 +22,17 @@ export default function HomePage() {
     {
       name: "Gateway Service",
       serviceUrl: "http://localhost:3000",
-      subtitle: "API Gateway & Load Balancer"
+      subtitle: "API Gateway & Load Balancer",
     },
     {
       name: "Detector Service",
       serviceUrl: "http://localhost:3001",
-      subtitle: "Anomaly Detection Engine"
+      subtitle: "Anomaly Detection Engine",
     },
     {
       name: "Auditor Service",
       serviceUrl: "http://localhost:3002",
-      subtitle: "Audit Trail Processor"
+      subtitle: "Audit Trail Processor",
     },
   ];
   const handleServiceClick = (serviceUrl: string) => {
@@ -157,5 +157,4 @@ export default function HomePage() {
       </div>
     </AppShell>
   );
-// ...nada más...
 }
