@@ -1,16 +1,56 @@
 const express = require('express');
 const http = require('http');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Environment variables for service hostnames
-const LIE_DETECTOR_HOST = process.env.LIE_DETECTOR_HOST || 'ms-lie-detector';
+const LIE_DETECTOR_HOST = process.env.LIE_DETECTOR_HOST || 'localhost';
 const LIE_DETECTOR_PORT = process.env.LIE_DETECTOR_PORT || 3001;
-const AUDITOR_HOST = process.env.AUDITOR_HOST || 'ms-auditor';
+const AUDITOR_HOST = process.env.AUDITOR_HOST || 'localhost';
 const AUDITOR_PORT = process.env.AUDITOR_PORT || 3002;
 
-app.use(express.json());
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*"]
+    }
+  }
+}));
+
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:8080',
+    process.env.FRONTEND_URL || 'http://localhost:5173'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
+app.use(express.json({ limit: '10mb' }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -34,7 +74,7 @@ app.get('/', (req, res) => {
 app.post('/events', async (req, res) => {
   try {
     const event = req.body;
-    
+
     // Validate event
     if (!event.eventId || !event.type) {
       return res.status(400).json({
@@ -87,7 +127,7 @@ app.post('/events', async (req, res) => {
         analysis: analysis,
         originalEvent: event
       });
-      
+
       const options = {
         hostname: AUDITOR_HOST,
         port: AUDITOR_PORT,

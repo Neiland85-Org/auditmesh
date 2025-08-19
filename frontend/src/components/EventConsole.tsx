@@ -1,6 +1,6 @@
+import { AnimatePresence, motion } from 'framer-motion'
+import { AlertCircle, CheckCircle2, ExternalLink, Loader2, Send } from 'lucide-react'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Send, CheckCircle2, AlertCircle, Loader2, ExternalLink } from 'lucide-react'
 
 interface EventData {
   actor: string
@@ -22,7 +22,7 @@ export default function EventConsole() {
     payload: '{"message": "hello world"}',
     action: 'created'
   })
-  
+
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<EventResult | null>(null)
   const [errors, setErrors] = useState<string[]>([])
@@ -38,54 +38,39 @@ export default function EventConsole() {
 
   const handleSubmit = async () => {
     const newErrors: string[] = []
-    
+
     if (!validateJSON(eventData.actor)) newErrors.push('Invalid Actor JSON')
     if (!validateJSON(eventData.subject)) newErrors.push('Invalid Subject JSON')
     if (!validateJSON(eventData.payload)) newErrors.push('Invalid Payload JSON')
     if (!eventData.action.trim()) newErrors.push('Action is required')
-    
+
     setErrors(newErrors)
     if (newErrors.length > 0) return
-    
+
     setIsLoading(true)
     setResult(null)
-    
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      setResult({
-        event_id: `evt_${Math.random().toString(36).substr(2, 9)}`,
-        trace_id: `trace_${Math.random().toString(36).substr(2, 9)}`,
-        root: `root_${Math.random().toString(36).substr(2, 16)}`
-      })
-    } catch (error) {
-      setErrors(['Failed to send event'])
-      // Simulate delay and mock response for development
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setResult({
-        event_id: `evt_${Math.random().toString(36).substr(2, 9)}`,
-        trace_id: `trace_${Math.random().toString(36).substr(2, 9)}`,
-        root: `root_${Math.random().toString(36).substr(2, 16)}`
-      });
-      // Uncomment below to use real backend instead of mock
-      /*
-      // TODO: Replace '/api/events' with your actual backend endpoint
-      const response = await fetch('/api/events', {
+      // Using real backend
+      const response = await fetch('http://localhost:3000/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(eventData)
       });
+
       if (!response.ok) {
         throw new Error('Failed to send event');
       }
+
       const data = await response.json();
       setResult({
-        event_id: data.event_id,
-        trace_id: data.trace_id,
-        root: data.root
+        event_id: data.eventId || data.event_id,
+        trace_id: data.analysis?.trace_id || `trace_${Math.random().toString(36).substr(2, 9)}`,
+        root: data.audit?.hash || `root_${Math.random().toString(36).substr(2, 16)}`
       });
-    } catch (error) {
+    } catch {
       setErrors(['Failed to send event']);
     } finally {
       setIsLoading(false);
@@ -93,7 +78,7 @@ export default function EventConsole() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -153,7 +138,7 @@ export default function EventConsole() {
               placeholder="created, updated, deleted..."
             />
           </div>
-          
+
           <motion.button
             onClick={handleSubmit}
             disabled={isLoading}
@@ -188,7 +173,7 @@ export default function EventConsole() {
                   <CheckCircle2 size={18} className="text-status-ok" />
                   <h3 className="text-lg font-semibold text-white">Event Published Successfully</h3>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-400">Event ID</label>
