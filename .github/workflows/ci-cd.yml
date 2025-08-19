@@ -70,7 +70,15 @@ jobs:
       - name: 🔎 Run gitleaks
         run: |
           gitleaks detect --source . --report-path gitleaks-report.json || true
-          echo "✅ Gitleaks scan completed"
+          set -e
+          echo "🔎 Running gitleaks scan..."
+          gitleaks detect --source . --report-path gitleaks-report.json
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "⚠️ Gitleaks scan failed with exit code $EXIT_CODE"
+          else
+            echo "✅ Gitleaks scan completed successfully"
+          fi
 
   test:
     name: 🧪 Testing Suite
