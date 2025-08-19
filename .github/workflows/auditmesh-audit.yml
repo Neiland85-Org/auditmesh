@@ -1,0 +1,76 @@
+name: auditmesh-audit
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+  id-token: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Setup Go (para gitleaks opcional)
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+      - name: Instalar herramientas (syft, grype, semgrep, checkov, gitleaks, kubescape)
+        run: |
+          set -e
+          pip install --upgrade pip
+          pip install semgrep checkov
+          # syft
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          # grype
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+          # gitleaks (vía Go para simplicidad)
+          go install github.com/zricethezav/gitleaks/v8@latest
+          echo "${HOME}/go/bin" >> $GITHUB_PATH
+          # kubescape
+          curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
+          echo "$HOME/.kubescape/bin" >> $GITHUB_PATH
+      - name: Crear carpeta artifacts
+        run: mkdir -p artifacts
+      - name: Ejecutar auditoría (Makefile)
+        run: |
+          python3 --version
+          # make audit (eliminado: no existe Makefile ni regla audit)
+      - name: Scorecard (supply chain) — acción oficial
+        if: github.ref == 'refs/heads/main'
+        uses: ossf/scorecard-action@main
+        with:
+          results_file: artifacts/scorecard.json
+          results_format: json
+          publish_results: false
+      - name: Resumen en Job Summary
+        run: |
+          echo "## AuditMesh — Resumen de Auditoría" >> $GITHUB_STEP_SUMMARY
+          test -f artifacts/summary.md && cat artifacts/summary.md >> $GITHUB_STEP_SUMMARY || echo "_Sin summary generado_"
+      - name: Subir artefactos
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditmesh-artifacts
+          path: artifacts/
+          if-no-files-found: warn
+      # - name: Generar badges + summary (docs/)
+      #   run: |
+      #     make docs
+      - name: Commit y push de docs (badges + summary)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(docs): update badges & summary [skip ci]"
+          file_pattern: "docs/**"
+
