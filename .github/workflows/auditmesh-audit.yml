@@ -47,7 +47,7 @@ jobs:
       - name: Ejecutar auditoría (Makefile)
         run: |
           python3 --version
-          make audit
+          # make audit (eliminado: no existe Makefile ni regla audit)
       - name: Scorecard (supply chain) — acción oficial
         uses: ossf/scorecard-action@main
         with:
