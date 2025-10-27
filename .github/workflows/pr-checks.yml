@@ -42,7 +42,7 @@ jobs:
           echo "✅ Security scan completed"
 
       - name: 📊 Upload Security Reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: security-reports-pr
@@ -80,7 +80,7 @@ jobs:
           npm test -- --coverage --ci --watchAll=false
 
       - name: 📊 Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: coverage-pr-${{ matrix.service }}
