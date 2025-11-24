@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🔍 Ejecutar linting de Markdown
         run: |
@@ -60,7 +60,7 @@ jobs:
     
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v5
@@ -92,7 +92,7 @@ jobs:
     needs: [pr-validation, test-pr]
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # CodeQL analysis is handled by GitHub's default setup
       # Análisis de CodeQL manejado por configuración por defecto de GitHub
