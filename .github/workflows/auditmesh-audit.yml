@@ -60,7 +60,7 @@ jobs:
           echo "## AuditMesh — Resumen de Auditoría" >> $GITHUB_STEP_SUMMARY
           test -f artifacts/summary.md && cat artifacts/summary.md >> $GITHUB_STEP_SUMMARY || echo "_Sin summary generado_"
       - name: Subir artefactos
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: auditmesh-artifacts
           path: artifacts/
